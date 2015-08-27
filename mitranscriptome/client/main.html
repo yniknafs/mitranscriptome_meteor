@@ -5,23 +5,25 @@
 <body>
   <h1>Welcome to Meteor!</h1>
 
-{{>typeahead}}
+{{> typeahead}}
 
-{{> boxplot id="gene-plot"}}
+{{> geneview }}
 
-{{> heatmap id="heatmap"}}
+{{> heatmap divid="heatmap"}}
 
 <!-- {{> tabular table=TabularTables.Transcripts
   class="table table-striped table-bordered table-condensed"}} -->
 
 </body>
 
-<template name="boxplot">
-  <div id={{id}}></div>
+<template name="geneview">
+  <h4>{{ selected_gene }}</h4>
+  <p>{{ expression_data }}</p>
+  <div id="gene_plot"></div>
 </template>
 
 <template name="heatmap">
-  <div id={{id}}></div>
+  <div id={{divid}}></div>
 </template>
 
 <template name="transcript">
@@ -48,8 +50,8 @@
 </template>
 
 <template name="genes">
-        {{#with obj}}
-       <p>{{gene_id}}</p>
-       <p>{{transcript_id}}</p>
-       {{/with}}
+  {{#with obj}}
+  <p>{{gene_id}}</p>
+  <p>{{transcript_id}}</p>
+  {{/with}}
 </template>

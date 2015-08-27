@@ -2,8 +2,6 @@ TabularTables = {};
 
 Meteor.isClient && Template.registerHelper('TabularTables', TabularTables);
 
-
-
 TabularTables.Transcripts = new Tabular.Table({
   name: "TranscriptList",
   collection: Transcripts,

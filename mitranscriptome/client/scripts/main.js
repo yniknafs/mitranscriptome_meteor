@@ -21,27 +21,56 @@ Template.body.helpers({
   }
 });
 
-Template.boxplot.onRendered(function () {
-  var divid = this.data.id;
-  var x = [];
-  var y0 = [];
-
-  for (var i = 0; i < 6503; i++ ) {
-    x[i] = i;
-    y0[i] = i + Math.random();
+Template.geneview.helpers({
+  selected_gene: function () {
+    return Session.get("selectedGene");
+  },
+  expression_data: function() {
+    var res = Expression.findOne({ transcript_id: Session.get("selectedGene") });
+    x = [];
+    y = [];
+    for (key in res) {
+      if (key === "_id" || key === "transcript_id") continue;
+      x.push(key);
+      y.push(res[key]);
+    }
+    var data = [{x: x, y: y, type: 'bar'}]
+    Plotly.newPlot('gene_plot', data);
+    console.log(x);
+    console.log(y);
   }
-  var trace1 = { x: x, y: y0, type: 'bar' };
-  Plotly.newPlot(divid, [trace1]);
-
-  // var data = [trace1, trace2];
-  // var graphOptions = {filename: "hello", fileopt: "overwrite"};
-  // Plotly.newPlot(divid, data, graphOptions, function (err, msg) {
-  //     console.log(msg);
-  // });
 });
 
+// Template.boxplot.onRendered(function () {
+//   var divid = this.data.divid;
+//   var y0 = [];
+//   var y1 = [];
+//
+//   var gene_id = Session.get("selectedGene");
+//
+//   for (var i = 0; i < 50; i++) {
+//   	y0[i] = Math.random();
+//   	y1[i] = Math.random() + 1;
+//   }
+//   var trace1 = {
+//     y: y0,
+//     type: 'box'
+//   };
+//   var trace2 = {
+//     y: y1,
+//     type: 'box'
+//   };
+//   var data = [trace1, trace2];
+//
+//   Plotly.newPlot(divid, data);
+//   // var graphOptions = {filename: "hello", fileopt: "overwrite"};
+//   // Plotly.newPlot(divid, data, graphOptions, function (err, msg) {
+//   //     console.log(msg);
+//   // });
+// });
+
 Template.heatmap.onRendered(function () {
-  var divid = this.data.id;
+  var divid = this.data.divid;
   var data = [
     {
       z: [[1, 20, 30], [20, 1, 60], [30, 60, 1]],
@@ -69,13 +98,9 @@ Template.typeahead.helpers({
     // suggestion - the suggestion object
     // datasetName - the name of the dataset the suggestion belongs to
     // TODO your event handler here
-    Session.set("selectedGene", suggestion.obj.gene_id);
-    console.log(Session.get("selectedGene"))
+    Session.set("selectedGene", suggestion.obj.transcript_id);
   }
-  // opened:
 });
-
-
 
 Meteor.startup(function(){
   // initializes all typeahead instances
