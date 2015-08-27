@@ -8,16 +8,16 @@
   {{> hello}}
 
   <ul>
-    {{#each tasks}}
-      {{> task}}
+    {{#each transcripts}}
+      {{> transcript}}
     {{/each}}
   </ul>
 </body>
 
-<template name="task">
+<template name="transcript">
   <li>
-    <span class="text">{{name}}</span>
-    <span class="text">{{color}}</span>
+    <span class="text">{{transcript_id}}</span>
+    <span class="text">{{chrom}}</span>
   </li>
 </template>
 

@@ -1,1 +1,1 @@
-testCollection = new Mongo.Collection('testCollection');
+Transcripts = new Mongo.Collection('Transcripts');

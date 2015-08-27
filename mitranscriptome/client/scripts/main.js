@@ -15,8 +15,8 @@ Template.hello.events({
 });
 
 Template.body.helpers({
-  tasks: function () {
+  transcripts: function () {
     // Show newest tasks at the top
-    return testCollection.find({}, {sort: {createdAt: -1}});
+    return Transcripts.find({}, {sort: {createdAt: -1}});
   }
 });
