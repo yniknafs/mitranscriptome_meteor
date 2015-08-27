@@ -47,10 +47,22 @@ Template.typeahead.helpers({
         console.log(err);
         return;
       }
-      callback(res.map(function(v){ return {value: v.transcript_id + '(' + v.gene_id + ')'}; }));
+
+      callback(res.map(function(v){ return {value: v.gene_id, obj: v}; }));
     });
+  },
+  selected: function(event, suggestion, Transcripts) {
+    // event - the jQuery event object
+    // suggestion - the suggestion object
+    // datasetName - the name of the dataset the suggestion belongs to
+    // TODO your event handler here
+    Session.set("selectedGene", suggestion.obj.gene_id);
+    console.log(Session.get("selectedGene"))
   }
+  // opened:
 });
+
+
 
 Meteor.startup(function(){
   // initializes all typeahead instances

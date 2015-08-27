@@ -36,7 +36,14 @@
 		<div class="form-group">
 			<input id=scrollable-dropdown-menu class="form-control typeahead" name="search" type="text" placeholder="Type to query"
 				   autocomplete="on" spellcheck="off" data-highlight="true" data-limit=80
-				   data-source="search"/>
+				   data-source="search" data-selected="selected" data-template="genes"/>
 		</div>
 	</div>
+</template>
+
+<template name="genes">
+        {{#with obj}}
+       <p>{{gene_id}}</p>
+       <p>{{transcript_id}}</p>
+       {{/with}}
 </template>

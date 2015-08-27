@@ -11,12 +11,12 @@ Meteor.methods({
         } else {
             options.limit = 50;
         }
-        console.log(options);
+        // console.log(options);
         // TODO fix regexp to support multiple tokens
         var regex = new RegExp(query);
         var query = Transcripts.find({$or: [{transcript_id: {$regex:  regex}},
                                             {gene_id: {$regex:  regex}}]}, options).fetch();
-        console.log(query);
+        // console.log(query);
         return query;
     }
 });
