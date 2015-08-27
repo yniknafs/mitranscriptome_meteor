@@ -24,11 +24,16 @@ Template.body.helpers({
 Template.geneview.helpers({
   selected_gene: function () {
     return Session.get("selectedGene");
-  },
-  expression_data: function() {
+  }
+});
+
+Template.geneview.onRendered(function () {
+  var x = [];
+  var y = [];
+
+  Tracker.autorun(function () {
     var res = Expression.findOne({ transcript_id: Session.get("selectedGene") });
-    x = [];
-    y = [];
+    console.log('res: ' + res);
     for (key in res) {
       if (key === "_id" || key === "transcript_id") continue;
       x.push(key);
@@ -38,36 +43,8 @@ Template.geneview.helpers({
     Plotly.newPlot('gene_plot', data);
     console.log(x);
     console.log(y);
-  }
+  });
 });
-
-// Template.boxplot.onRendered(function () {
-//   var divid = this.data.divid;
-//   var y0 = [];
-//   var y1 = [];
-//
-//   var gene_id = Session.get("selectedGene");
-//
-//   for (var i = 0; i < 50; i++) {
-//   	y0[i] = Math.random();
-//   	y1[i] = Math.random() + 1;
-//   }
-//   var trace1 = {
-//     y: y0,
-//     type: 'box'
-//   };
-//   var trace2 = {
-//     y: y1,
-//     type: 'box'
-//   };
-//   var data = [trace1, trace2];
-//
-//   Plotly.newPlot(divid, data);
-//   // var graphOptions = {filename: "hello", fileopt: "overwrite"};
-//   // Plotly.newPlot(divid, data, graphOptions, function (err, msg) {
-//   //     console.log(msg);
-//   // });
-// });
 
 Template.heatmap.onRendered(function () {
   var divid = this.data.divid;
@@ -89,15 +66,17 @@ Template.typeahead.helpers({
         console.log(err);
         return;
       }
-
       callback(res.map(function(v){ return {value: v.gene_id, obj: v}; }));
     });
   },
-  selected: function(event, suggestion, Transcripts) {
+  selected: function(event, suggestion, datasetName) {
     // event - the jQuery event object
     // suggestion - the suggestion object
     // datasetName - the name of the dataset the suggestion belongs to
     // TODO your event handler here
+    console.log('event: ' + event);
+    console.log('suggestion: ' + suggestion);
+    console.log('datasetName: ' + datasetName);
     Session.set("selectedGene", suggestion.obj.transcript_id);
   }
 });
