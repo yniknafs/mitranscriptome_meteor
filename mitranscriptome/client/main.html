@@ -5,14 +5,18 @@
 <body>
   <h1>Welcome to Meteor!</h1>
 
-  {{>typeahead}}
+{{>typeahead}}
 
-  <!-- {{> tabular table=TabularTables.Transcripts
-    class="table table-striped table-bordered table-condensed"}} -->
+{{> boxplot id="gene-plot"}}
+
+<!-- {{> tabular table=TabularTables.Transcripts
+  class="table table-striped table-bordered table-condensed"}} -->
 
 </body>
 
-
+<template name="boxplot">
+  <div id={{id}}></div>
+</template>
 
 <template name="transcript">
   <li>

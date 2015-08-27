@@ -21,20 +21,38 @@ Template.body.helpers({
   }
 });
 
-	Template.typeahead.helpers({
-		search: function(query, sync, callback) {
-			Meteor.call('search', query, {limit: 10, sort: { transcript_id : 1 }}, function(err, res) {
-				if (err) {
-					console.log(err);
-					return;
-				}
-				callback(res.map(function(v){ return {value: v.transcript_id + '(' + v.gene_id + ')'}; }));
-			});
-		}
-	});
+Template.boxplot.onRendered(function () {
+  var divid = this.data.id;
+  var x = [];
+  var y0 = [];
 
-  Meteor.startup(function(){
-		// initializes all typeahead instances
-		Meteor.typeahead.inject();
+  for (var i = 0; i < 6503; i++ ) {
+    x[i] = i;
+    y0[i] = i + Math.random();
+  }
+  var trace1 = { x: x, y: y0, type: 'bar' };
+  Plotly.newPlot(divid, [trace1]);
 
-	});
+  // var data = [trace1, trace2];
+  // var graphOptions = {filename: "hello", fileopt: "overwrite"};
+  // Plotly.newPlot(divid, data, graphOptions, function (err, msg) {
+  //     console.log(msg);
+  // });
+});
+
+Template.typeahead.helpers({
+  search: function(query, sync, callback) {
+    Meteor.call('search', query, {limit: 10, sort: { transcript_id : 1 }}, function(err, res) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      callback(res.map(function(v){ return {value: v.transcript_id + '(' + v.gene_id + ')'}; }));
+    });
+  }
+});
+
+Meteor.startup(function(){
+  // initializes all typeahead instances
+  Meteor.typeahead.inject();
+});
