@@ -20,3 +20,21 @@ Template.body.helpers({
     return Transcripts.find({}, {sort: {createdAt: -1}});
   }
 });
+
+	Template.typeahead.helpers({
+		search: function(query, sync, callback) {
+			Meteor.call('search', query, {limit: 10, sort: { transcript_id : 1 }}, function(err, res) {
+				if (err) {
+					console.log(err);
+					return;
+				}
+				callback(res.map(function(v){ return {value: v.transcript_id + '(' + v.gene_id + ')'}; }));
+			});
+		}
+	});
+
+  Meteor.startup(function(){
+		// initializes all typeahead instances
+		Meteor.typeahead.inject();
+
+	});
