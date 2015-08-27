@@ -13,3 +13,10 @@ Template.hello.events({
     Session.set('counter', Session.get('counter') + 1);
   }
 });
+
+Template.body.helpers({
+  tasks: function () {
+    // Show newest tasks at the top
+    return testCollection.find({}, {sort: {createdAt: -1}});
+  }
+});

@@ -6,7 +6,20 @@
   <h1>Welcome to Meteor!</h1>
 
   {{> hello}}
+
+  <ul>
+    {{#each tasks}}
+      {{> task}}
+    {{/each}}
+  </ul>
 </body>
+
+<template name="task">
+  <li>
+    <span class="text">{{name}}</span>
+    <span class="text">{{color}}</span>
+  </li>
+</template>
 
 <template name="hello">
   <button>Click Me</button>
