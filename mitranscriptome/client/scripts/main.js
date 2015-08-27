@@ -40,6 +40,19 @@ Template.boxplot.onRendered(function () {
   // });
 });
 
+Template.heatmap.onRendered(function () {
+  var divid = this.data.id;
+  var data = [
+    {
+      z: [[1, 20, 30], [20, 1, 60], [30, 60, 1]],
+      colorscale: 'Picnic',
+      type: 'heatmap'
+    }
+  ];
+  var layout = {title: 'Picnic'};
+  Plotly.newPlot(divid, data);
+});
+
 Template.typeahead.helpers({
   search: function(query, sync, callback) {
     Meteor.call('search', query, {limit: 10, sort: { transcript_id : 1 }}, function(err, res) {

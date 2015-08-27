@@ -9,12 +9,18 @@
 
 {{> boxplot id="gene-plot"}}
 
+{{> heatmap id="heatmap"}}
+
 <!-- {{> tabular table=TabularTables.Transcripts
   class="table table-striped table-bordered table-condensed"}} -->
 
 </body>
 
 <template name="boxplot">
+  <div id={{id}}></div>
+</template>
+
+<template name="heatmap">
   <div id={{id}}></div>
 </template>
 
