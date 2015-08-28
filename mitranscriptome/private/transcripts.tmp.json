@@ -1,0 +1,9 @@
+{"end": "15297", "transcript_length": "1321", "gene_id": "G000001", "start": "11016", "num_exons": "3", "transcript_id": "T000001", "_id": 0, "chrom": "chr1", "strand": "-"}
+{"end": "29382", "transcript_length": "2207", "gene_id": "G000001", "start": "11016", "num_exons": "11", "transcript_id": "T000002", "_id": 1, "chrom": "chr1", "strand": "-"}
+{"end": "13957", "transcript_length": "899", "gene_id": "G000002", "start": "11992", "num_exons": "3", "transcript_id": "T000003", "_id": 2, "chrom": "chr1", "strand": "+"}
+{"end": "13957", "transcript_length": "830", "gene_id": "G000002", "start": "13127", "num_exons": "1", "transcript_id": "T000004", "_id": 3, "chrom": "chr1", "strand": "+"}
+{"end": "29800", "transcript_length": "265", "gene_id": "G000003", "start": "29535", "num_exons": "1", "transcript_id": "T000005", "_id": 4, "chrom": "chr1", "strand": "-"}
+{"end": "55446", "transcript_length": "955", "gene_id": "G000004", "start": "54491", "num_exons": "1", "transcript_id": "T000006", "_id": 5, "chrom": "chr1", "strand": "."}
+{"end": "64477", "transcript_length": "2371", "gene_id": "G000005", "start": "58047", "num_exons": "2", "transcript_id": "T000007", "_id": 6, "chrom": "chr1", "strand": "+"}
+{"end": "79261", "transcript_length": "1251", "gene_id": "G000006", "start": "77505", "num_exons": "2", "transcript_id": "T000008", "_id": 7, "chrom": "chr1", "strand": "-"}
+{"end": "153353", "transcript_length": "21895", "gene_id": "G000007", "start": "84410", "num_exons": "10", "transcript_id": "T000009", "_id": 8, "chrom": "chr1", "strand": "-"}
