@@ -16,6 +16,7 @@ import subprocess
 TRANSCRIPTS_COLLECTION = 'Transcripts'
 SAMPLES_COLLECTION = 'Samples'
 EXPRESSION_COLLECTION = 'Expression'
+SSEA_COLLECTION = 'SSEA'
 
 def parse_column(filename, sep='\t', header=True, colnum=0):
     f = open(filename)
@@ -55,54 +56,43 @@ def parse_matrix(filename, sep='\t'):
         yield d
         i += 1
 
+def run_mongoimport(args, parse_func, filename, coll, tmp_json='tmp.json'):
+    with open(tmp_json, 'w') as f:
+        for json_str in parse_func(filename, args.sep):
+            print >>f, json_str
+    subprocess.call([args.mongoimport,
+                     '-h', args.host,
+                     '-d', args.db,
+                     '-c', coll,
+                     '--file', tmp_json,
+                     '--drop',
+                     '--type', 'json'])
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser();
     parser.add_argument('--mongoimport', default='mongoimport')
     parser.add_argument('--host')
     parser.add_argument('--db')
-    parser.add_argument('-t', '--transcripts', dest='transcript_file')
-    parser.add_argument('-s', '--samples', dest='samples_file')
-    parser.add_argument('-e', '--expr', dest='expr_file')
-    parser.add_argument('--tsep', default='\t')
-    parser.add_argument('--ssep', default='\t')
-    parser.add_argument('--esep', default='\t')
+    parser.add_argument('-t', '--transcripts', dest='transcripts_file', default=None)
+    parser.add_argument('-s', '--samples', dest='samples_file', default=None)
+    parser.add_argument('-e', '--expr', dest='expr_file', default=None)
+    parser.add_argument('--ssea', dest='ssea_file', default=None)
+    parser.add_argument('--sep', default='\t')
     args = parser.parse_args()
 
     # import transcripts file
-    tmp_json = 'transcripts.tmp.json'
-    with open(tmp_json, 'w') as f:
-        for json_str in parse_tabular(args.transcript_file, args.tsep):
-            print >>f, json_str
-    subprocess.call([args.mongoimport,
-                     '-h', args.host,
-                     '-d', args.db,
-                     '-c', TRANSCRIPTS_COLLECTION,
-                     '--file', tmp_json,
-                     '--drop',
-                     '--type', 'json'])
-
+    if args.transcripts_file is not None:
+        run_mongoimport(args, parse_tabular, args.transcripts_file,
+                        TRANSCRIPTS_COLLECTION, 'transcripts.tmp.json')
     # import samples file
-    tmp_json = 'samples.tmp.json'
-    with open(tmp_json, 'w') as f:
-        for json_str in parse_tabular(args.samples_file, args.ssep):
-            print >>f, json_str
-    subprocess.call([args.mongoimport,
-                     '-h', args.host,
-                     '-d', args.db,
-                     '-c', SAMPLES_COLLECTION,
-                     '--file', tmp_json,
-                     '--drop',
-                     '--type', 'json'])
-
+    if args.samples_file is not None:
+        run_mongoimport(args, parse_tabular, args.samples_file,
+                        SAMPLES_COLLECTION, 'samples.tmp.json')
     # import expression matrix
-    tmp_json = 'expr.tmp.json'
-    with open(tmp_json, 'w') as f:
-        for json_str in parse_matrix(args.expr_file, args.esep):
-            print >>f, json_str
-    subprocess.call([args.mongoimport,
-                     '-h', args.host,
-                     '-d', args.db,
-                     '-c', EXPRESSION_COLLECTION,
-                     '--file', tmp_json,
-                     '--drop',
-                     '--type', 'json'])
+    if args.expr_file is not None:
+        run_mongoimport(args, parse_matrix, args.expr_file,
+                        EXPRESSION_COLLECTION, 'expr.tmp.json')
+    # import ssea results
+    if args.ssea_file is not None:
+        run_mongoimport(args, parse_tabular, args.ssea_file,
+                        SSEA_COLLECTION, 'ssea.tmp.json')

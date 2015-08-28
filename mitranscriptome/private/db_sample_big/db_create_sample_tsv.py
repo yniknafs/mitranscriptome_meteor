@@ -1,30 +1,20 @@
 '''
-Turns a tab-delimited text file into JSON for import using mongoimport
-
-Assumptions:
-1) First line is a 'header' line
-2) The first column is the 'key' column
-3) Subsequent columns contain numeric data
+python db_create_sample_tsv.py /Volumes/dx11/mctp/projects/ssea/isoform_count_matrix_v7/colnames.txt /Volumes/dx11/mctp/projects/ssea/isoform_count_matrix_v7/colmeta.tsv > samples.big.tsv
 '''
 import sys
 import os
-import json
 import argparse
 import logging
-
-'''
-python db_create_sample_tsv.py /Volumes/dx11/mctp/projects/ssea/isoform_count_matrix_v7/colnames.txt /Volumes/dx11/mctp/projects/ssea/isoform_count_matrix_v7/colmeta.tsv > samples.big.tsv
-'''
 
 def main():
     # parse command line
     parser = argparse.ArgumentParser()
     parser.add_argument("ordered_colnames")
     parser.add_argument("sample_metadata")
-
     args = parser.parse_args()
+    
     logging.basicConfig(level=logging.DEBUG,
-                      format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+                        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     tissue_dict = {}
     fileh = open(args.sample_metadata)

@@ -1,20 +1,10 @@
 '''
-Turns a tab-delimited text file into JSON for import using mongoimport
-
-Assumptions:
-1) First line is a 'header' line
-2) The first column is the 'key' column
-3) Subsequent columns contain numeric data
+python db_create_transcript_tsv.py /Volumes/dx11/mctp/projects/ssea/isoform_count_matrix_v7/rownames.txt /Volumes/dx11/mctp/projects/mitranscriptome/annotation/metadata.transcript.txt > transcripts.big.tsv
 '''
 import sys
 import os
-import json
 import argparse
 import logging
-
-'''
-python db_create_transcript_tsv.py /Volumes/dx11/mctp/projects/ssea/isoform_count_matrix_v7/rownames.txt /Volumes/dx11/mctp/projects/mitranscriptome/annotation/metadata.transcript.txt > transcripts.big.tsv
-'''
 
 def main():
     # parse command line

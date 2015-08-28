@@ -38,7 +38,7 @@ Template.geneview.onRendered(function () {
     var row = Expression.findOne({ key: Session.get("selectedGene") });
     // mongo query for column metadata
     var cols = Samples.find().fetch();
-    console.log(cols)
+
     // boxplot - one box for each tissue type
     // fancy d3 to subdivide column metadata into arrays by tissue type
     // TODO: this code can be precomputed since DB is not changing
