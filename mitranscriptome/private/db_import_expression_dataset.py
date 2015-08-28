@@ -4,7 +4,7 @@ Command line example:
 python db_import_expression_dataset.py
   --mongoimport ~/Downloads/mongodb-osx-x86_64-3.0.6/bin/mongoimport
   --host localhost:3001 --db meteor
-  -t transcripts.txt -s samples.txt -e expr.txt
+  -t transcripts.txt -s samples.txt -e expr.txt --ssea ssea.txt
 
 '''
 import sys
