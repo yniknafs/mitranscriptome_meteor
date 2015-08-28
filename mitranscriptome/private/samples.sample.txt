@@ -1,0 +1,11 @@
+name,tissue
+a,prostate
+b,prostate
+c,prostate
+d,breast
+e,breast
+f,breast
+g,lung
+h,lung
+i,lung
+j,lung

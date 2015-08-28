@@ -32,17 +32,51 @@ Template.geneview.onRendered(function () {
   var y = [];
 
   Tracker.autorun(function () {
-    var res = Expression.findOne({ transcript_id: Session.get("selectedGene") });
-    console.log('res: ' + res);
-    for (key in res) {
-      if (key === "_id" || key === "transcript_id") continue;
-      x.push(key);
-      y.push(res[key]);
-    }
-    var data = [{x: x, y: y, type: 'bar'}]
-    Plotly.newPlot('gene_plot', data);
-    console.log(x);
-    console.log(y);
+    if (! Session.get("selectedGene")) return;
+
+    // mongo query for row metadata
+    var row = Expression.findOne({ key: Session.get("selectedGene") });
+    // mongo query for column metadata
+    var cols = Samples.find().fetch();
+
+    // boxplot - one box for each tissue type
+    // fancy d3 to subdivide column metadata into arrays by tissue type
+    // TODO: this code can be precomputed since DB is not changing
+    var nested_data = d3.nest()
+      .key(function(d) { return d.tissue; })
+      .entries(cols);
+
+    // build one box for each tissue type
+    var traces = [];
+    nested_data.forEach(function (el1) {
+      var vals = el1.values.map(function (el2) {
+        return row.value[el2._id];
+      });
+
+      traces.push({
+        'y': vals,
+        type: 'box',
+        name: el1.key
+      });
+    });
+    console.log(traces);
+
+    // box plot
+    Plotly.newPlot('gene_plot', traces);
+
+    // bar plot
+    //var data = [{
+    //  x:
+    //}]
+    // for (key in res) {
+    //   if (key === "_id" || key === "transcript_id") continue;
+    //   x.push(key);
+    //   y.push(res[key]);
+    // }
+    // var data = [{x: x, y: y, type: 'bar'}]
+    // Plotly.newPlot('gene_plot', data);
+    // console.log(x);
+    // console.log(y);
   });
 });
 
