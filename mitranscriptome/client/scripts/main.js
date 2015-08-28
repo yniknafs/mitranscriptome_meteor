@@ -59,7 +59,6 @@ Template.geneview.onRendered(function () {
         name: el1.key
       });
     });
-    console.log(traces);
 
     // box plot
     Plotly.newPlot('gene_plot', traces);
