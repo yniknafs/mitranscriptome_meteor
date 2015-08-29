@@ -14,6 +14,21 @@ Template.hello.events({
   }
 });
 
+Tracker.autorun(function () {
+  if (! Session.get("selectedGene") ) return;
+  Meteor.call('getExpressionByTranscript',
+              Session.get("selectedGene"),
+              function(err, res) {
+                Session.set("selectedGeneExpr", res);
+              });
+});
+
+Tracker.autorun(function () {
+  Meteor.call('getSamples', function(err, res) {
+    Session.set("selectedSamples", res);
+  });
+});
+
 Template.body.helpers({
   transcripts: function () {
     // Show newest tasks at the top
@@ -32,12 +47,13 @@ Template.geneview.onRendered(function () {
   var y = [];
 
   Tracker.autorun(function () {
-    if (! Session.get("selectedGene")) return;
+    if (! Session.get("selectedGeneExpr")) return;
+    if (! Session.get("selectedSamples")) return;
 
-    // mongo query for row metadata
-    var row = Expression.findOne({ key: Session.get("selectedGene") });
-    // mongo query for column metadata
-    var cols = Samples.find().fetch();
+    // expression data for gene
+    var row = Session.get("selectedGeneExpr");
+    // currently selected samples
+    var cols = Session.get("selectedSamples");
 
     // boxplot - one box for each tissue type
     // fancy d3 to subdivide column metadata into arrays by tissue type
@@ -107,9 +123,6 @@ Template.typeahead.helpers({
     // suggestion - the suggestion object
     // datasetName - the name of the dataset the suggestion belongs to
     // TODO your event handler here
-    console.log('event: ' + event);
-    console.log('suggestion: ' + suggestion);
-    console.log('datasetName: ' + datasetName);
     Session.set("selectedGene", suggestion.obj.transcript_id);
   }
 });

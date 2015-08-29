@@ -18,5 +18,12 @@ Meteor.methods({
                                             {gene_id: {$regex:  regex}}]}, options).fetch();
         // console.log(query);
         return query;
-    }
+    },
+    getSamples: function() {
+      return Samples.find().fetch();
+    },
+    getExpressionByTranscript: function(transcript_id) {
+      // mongo query for one row of expression data
+      return Expression.findOne({ key: transcript_id });
+    },
 });
