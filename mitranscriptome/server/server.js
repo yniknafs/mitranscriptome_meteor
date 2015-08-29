@@ -2,6 +2,8 @@ Meteor.startup(function () {
   // code to run on server at startup
 });
 
+
+
 Meteor.methods({
     transcript_search: function(query, options) {
         options = options || {};
@@ -19,7 +21,7 @@ Meteor.methods({
         // console.log(query);
         return query;
     },
-<<<<<<< Updated upstream
+
     getSamples: function() {
       return Samples.find().fetch();
     },
@@ -27,7 +29,7 @@ Meteor.methods({
       // mongo query for one row of expression data
       return Expression.findOne({ key: transcript_id });
     },
-=======
+
     analysis_search: function(query, options) {
         options = options || {};
         // guard against client-side DOS: hard limit to 50
@@ -42,6 +44,7 @@ Meteor.methods({
         var query = Analyses.find({ss_compname: {$regex:  regex}}, options).fetch();
         // console.log(query);
         return query;
+
       }
->>>>>>> Stashed changes
+
 });

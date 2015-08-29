@@ -29,10 +29,26 @@ Tracker.autorun(function () {
   });
 });
 
+
+
 Template.body.helpers({
   transcripts: function () {
     // Show newest tasks at the top
     return Transcripts.find({}, {sort: {createdAt: -1}});
+  }
+});
+
+Template.analysis_table.helpers({
+  selector: function() {
+    return {ss_compname: Session.get("selectedAnalysis")};
+  }
+});
+
+Template.analysis_table.events({
+  'click tbody > tr': function (event) {
+    var dataTable = $(event.target).closest('table').DataTable();
+    var rowData = dataTable.row(event.currentTarget).data();
+    Session.set("selectedGene", rowData.transcript_id);
   }
 });
 
@@ -143,10 +159,7 @@ Template.analysis_typeahead.helpers({
     // suggestion - the suggestion object
     // datasetName - the name of the dataset the suggestion belongs to
     // TODO your event handler here
-    console.log('event: ' + event);
-    console.log('suggestion: ' + suggestion);
-    console.log('datasetName: ' + datasetName);
-    Session.set("selectedAnalysis", suggestion.obj.transcript_id);
+    Session.set("selectedAnalysis", suggestion.obj.ss_compname);
   }
 });
 

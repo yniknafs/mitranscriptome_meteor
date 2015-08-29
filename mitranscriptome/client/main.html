@@ -9,13 +9,13 @@
   {{> analysis_typeahead}}
   {{> gene_typeahead}}
 
+  {{> analysis_table}}
 
   {{> geneview }}
 
   {{> heatmap divid="heatmap"}}
 
-  {{> tabular table=TabularTables.Transcripts
-    class="table table-striped table-bordered table-condensed"}}
+
 
 </body>
 
@@ -67,4 +67,9 @@
     <p>{{gene_id}}</p>
     <p>{{transcript_id}}</p>
   {{/with}}
+</template>
+
+<template name="analysis_table">
+  {{> tabular table=TabularTables.Analysis
+    class="table table-striped table-bordered table-condensed" selector=selector}}
 </template>
