@@ -5,14 +5,17 @@
 <body>
   <h1>Welcome to Meteor!</h1>
 
-  {{> typeahead}}
+
+  {{> analysis_typeahead}}
+  {{> gene_typeahead}}
+
 
   {{> geneview }}
 
   {{> heatmap divid="heatmap"}}
 
-<!-- {{> tabular table=TabularTables.Transcripts
-  class="table table-striped table-bordered table-condensed"}} -->
+  {{> tabular table=TabularTables.Transcripts
+    class="table table-striped table-bordered table-condensed"}}
 
 </body>
 
@@ -37,13 +40,24 @@
   <p>You've pressed the button {{counter}} times.</p>
 </template>
 
-<template name="typeahead">
+<template name="gene_typeahead">
 	<div>
-		<h2>Server side search</h2>
+		<h2>Select a Gene</h2>
 		<div class="form-group">
 			<input id=scrollable-dropdown-menu class="form-control typeahead" name="search" type="text" placeholder="Type to query"
 				   autocomplete="on" spellcheck="off" data-highlight="true" data-limit=80
 				   data-source="search" data-selected="selected" data-template="genes"/>
+		</div>
+	</div>
+</template>
+
+<template name="analysis_typeahead">
+	<div>
+		<h2>Select an Analysis</h2>
+		<div class="form-group">
+			<input id=scrollable-dropdown-menu class="form-control typeahead" name="search" type="text" placeholder="Type to query"
+				   autocomplete="on" spellcheck="off" data-highlight="true" data-limit=80
+				   data-source="search" data-selected="selected"/>
 		</div>
 	</div>
 </template>

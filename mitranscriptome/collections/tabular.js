@@ -7,6 +7,6 @@ TabularTables.Transcripts = new Tabular.Table({
   collection: Transcripts,
   columns: [
     {data: "transcript_id", title: "Transcript ID"},
-    {data: "gene_id", title: "Gene ID"}
+    {data: "ss_compname", title: "Gene ID"}
   ]
 });

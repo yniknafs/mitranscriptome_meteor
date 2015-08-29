@@ -108,13 +108,14 @@ Template.heatmap.onRendered(function () {
   Plotly.newPlot(divid, data);
 });
 
-Template.typeahead.helpers({
+Template.gene_typeahead.helpers({
   search: function(query, sync, callback) {
-    Meteor.call('search', query, {limit: 10, sort: { transcript_id : 1 }}, function(err, res) {
+    Meteor.call('transcript_search', query, {limit: 10, sort: { transcript_id : 1 }}, function(err, res) {
       if (err) {
         console.log(err);
         return;
       }
+      console.log(res)
       callback(res.map(function(v){ return {value: v.gene_id, obj: v}; }));
     });
   },
@@ -124,6 +125,28 @@ Template.typeahead.helpers({
     // datasetName - the name of the dataset the suggestion belongs to
     // TODO your event handler here
     Session.set("selectedGene", suggestion.obj.transcript_id);
+  }
+});
+
+Template.analysis_typeahead.helpers({
+  search: function(query, sync, callback) {
+    Meteor.call('analysis_search', query, {limit: 10}, function(err, res) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      callback(res.map(function(v){ return {value: v.ss_compname, obj: v}; }));
+    });
+  },
+  selected: function(event, suggestion, datasetName) {
+    // event - the jQuery event object
+    // suggestion - the suggestion object
+    // datasetName - the name of the dataset the suggestion belongs to
+    // TODO your event handler here
+    console.log('event: ' + event);
+    console.log('suggestion: ' + suggestion);
+    console.log('datasetName: ' + datasetName);
+    Session.set("selectedAnalysis", suggestion.obj.transcript_id);
   }
 });
 

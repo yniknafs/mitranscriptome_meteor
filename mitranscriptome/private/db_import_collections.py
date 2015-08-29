@@ -1,10 +1,10 @@
 '''
 Command line example:
 
-python db_import_expression_dataset.py
+python db_import_collections.py
   --mongoimport ~/Downloads/mongodb-osx-x86_64-3.0.6/bin/mongoimport
   --host localhost:3001 --db meteor
-  -t transcripts.txt -s samples.txt -e expr.txt --ssea ssea.txt
+  -t transcripts.txt -s samples.txt -e expr.txt --ssea ssea.txt -a analysis.txt
 
 '''
 import sys
@@ -17,6 +17,7 @@ TRANSCRIPTS_COLLECTION = 'Transcripts'
 SAMPLES_COLLECTION = 'Samples'
 EXPRESSION_COLLECTION = 'Expression'
 SSEA_COLLECTION = 'SSEA'
+ANALYSES_COLLECTION = 'Analyses'
 
 def parse_column(filename, sep='\t', header=True, colnum=0):
     f = open(filename)
@@ -77,22 +78,28 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--samples', dest='samples_file', default=None)
     parser.add_argument('-e', '--expr', dest='expr_file', default=None)
     parser.add_argument('--ssea', dest='ssea_file', default=None)
+    parser.add_argument('-a', dest='analyses_file', default=None)
     parser.add_argument('--sep', default='\t')
     args = parser.parse_args()
 
     # import transcripts file
-    if args.transcripts_file is not None:
+    if args.transcripts_file:
         run_mongoimport(args, parse_tabular, args.transcripts_file,
                         TRANSCRIPTS_COLLECTION, 'transcripts.tmp.json')
     # import samples file
-    if args.samples_file is not None:
+    if args.samples_file:
         run_mongoimport(args, parse_tabular, args.samples_file,
                         SAMPLES_COLLECTION, 'samples.tmp.json')
     # import expression matrix
-    if args.expr_file is not None:
+    if args.expr_file:
         run_mongoimport(args, parse_matrix, args.expr_file,
                         EXPRESSION_COLLECTION, 'expr.tmp.json')
     # import ssea results
-    if args.ssea_file is not None:
+    if args.ssea_file:
         run_mongoimport(args, parse_tabular, args.ssea_file,
                         SSEA_COLLECTION, 'ssea.tmp.json')
+
+    # import ssea results
+    if args.analyses_file:
+        run_mongoimport(args, parse_tabular, args.analyses_file,
+                        ANALYSES_COLLECTION, 'analyses.tmp.json')
