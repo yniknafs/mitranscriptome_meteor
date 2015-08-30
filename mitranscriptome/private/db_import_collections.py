@@ -156,7 +156,8 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--samples', dest='samples_file', default=None)
     parser.add_argument('-e', '--expr', dest='expr_file', default=None)
     parser.add_argument('--ssea', dest='ssea_file', default=None)
-    parser.add_argument('-a', dest='analyses_file', default=None)
+    parser.add_argument('-a', '--analyses', dest='analyses_file', default=None)
+    parser.add_argument('--aliases', dest='aliases_file', default=None)
     parser.add_argument('--sep', default='\t')
     parser.add_argument('--keeptmp', action='store_true', default=False)
     args = parser.parse_args()
@@ -167,6 +168,11 @@ if __name__ == '__main__':
                         TRANSCRIPTS_COLLECTION, 'transcripts.tmp.json')
         json_iter = convert_transcript_to_gene_metadata(args.transcripts_file, args.sep)
         run_mongoimport(args, json_iter, GENES_COLLECTION, 'genes.tmp.json')
+
+    # import gene/transcript name aliases
+    if args.aliases_file:
+        run_mongoimport(args, parse_tabular(args.aliases_file, args.sep),
+                        ALIASES_COLLECTION, 'aliases.tmp.json')
 
     # import samples file
     if args.samples_file:
@@ -194,7 +200,7 @@ if __name__ == '__main__':
         run_mongoimport(args, parse_tabular(args.ssea_file, args.sep),
                         SSEA_TRANSCRIPT_COLLECTION, 'ssea.tmp.json')
 
-    # import ssea results
+    # import analysis results
     if args.analyses_file:
         run_mongoimport(args, parse_tabular(args.analyses_file, args.sep),
                         ANALYSES_COLLECTION, 'analyses.tmp.json')

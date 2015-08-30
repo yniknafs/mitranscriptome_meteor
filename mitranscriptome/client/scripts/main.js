@@ -1,22 +1,6 @@
-// counter starts at 0
-Session.setDefault('counter', 0);
-
-Template.hello.helpers({
-  counter: function () {
-    return Session.get('counter');
-  }
-});
-
-Template.hello.events({
-  'click button': function () {
-    // increment the counter when button is clicked
-    Session.set('counter', Session.get('counter') + 1);
-  }
-});
-
 Tracker.autorun(function () {
   if (! Session.get("selectedGene") ) return;
-  Meteor.call('getExpressionByTranscript',
+  Meteor.call('getExpressionByGene',
               Session.get("selectedGene"),
               function(err, res) {
                 Session.set("selectedGeneExpr", res);
@@ -29,18 +13,9 @@ Tracker.autorun(function () {
   });
 });
 
-
-
-Template.body.helpers({
-  transcripts: function () {
-    // Show newest tasks at the top
-    return Transcripts.find({}, {sort: {createdAt: -1}});
-  }
-});
-
 Template.analysis_table.helpers({
   selector: function() {
-    return {ss_compname: Session.get("selectedAnalysis")};
+    return {analysis_id: Session.get("selectedAnalysis")};
   }
 });
 
