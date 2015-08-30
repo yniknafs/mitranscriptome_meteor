@@ -93,21 +93,14 @@ Template.geneview.onRendered(function () {
     });
 
     // box plot
-    Plotly.newPlot('gene_plot', traces);
+    // Plotly.newPlot('gene_plot', traces);
 
     // bar plot
-    //var data = [{
-    //  x:
-    //}]
-    // for (key in res) {
-    //   if (key === "_id" || key === "transcript_id") continue;
-    //   x.push(key);
-    //   y.push(res[key]);
-    // }
-    // var data = [{x: x, y: y, type: 'bar'}]
-    // Plotly.newPlot('gene_plot', data);
-    // console.log(x);
-    // console.log(y);
+    var x = cols.map(function(el) { return el.library_id; });
+    var y = row.value;
+    var data = [{x: x, y: y, type: 'bar'}]
+    Plotly.newPlot('gene_plot', data);
+
   });
 });
 
