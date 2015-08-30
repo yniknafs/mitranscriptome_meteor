@@ -1,0 +1,1 @@
+transcript_id	gene_id	chrom	start	end	strand	num_exons	transcript_lengtht1	g1	1	123	9898	+	1	412t2	g1	2	423	9898	-	2	1241t3	g1	2	32	9898	-	4	6434t4	g2	3	123	9898	-	1	1234t5	g2	4	123	9898	-	2	2351t6	g3	5	124	9898	-	3	5343t7	g4	6	12	98567	-	5	5423t8	g5	7	421	567	-	1	1345t9	g6	8	321	456	-	2	2351t10	g6	9	523	3646	-	4	1241
