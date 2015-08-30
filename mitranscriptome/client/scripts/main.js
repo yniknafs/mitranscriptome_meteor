@@ -126,7 +126,7 @@ Template.heatmap.onRendered(function () {
 
 Template.gene_typeahead.helpers({
   search: function(query, sync, callback) {
-    Meteor.call('transcript_search', query, {limit: 10, sort: { transcript_id : 1 }}, function(err, res) {
+    Meteor.call('transcript_search', query, {limit: 100, sort: { transcript_id : 1 }}, function(err, res) {
       if (err) {
         console.log(err);
         return;
@@ -146,7 +146,7 @@ Template.gene_typeahead.helpers({
 
 Template.analysis_typeahead.helpers({
   search: function(query, sync, callback) {
-    Meteor.call('analysis_search', query, {limit: 10}, function(err, res) {
+    Meteor.call('analysis_search', query, {limit: 100}, function(err, res) {
       if (err) {
         console.log(err);
         return;

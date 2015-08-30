@@ -16,8 +16,10 @@ Meteor.methods({
         // console.log(options);
         // TODO fix regexp to support multiple tokens
         var regex = new RegExp(query);
-        var query = Transcripts.find({$or: [{transcript_id: {$regex:  regex}},
-                                            {gene_id: {$regex:  regex}}]}, options).fetch();
+        var query = Transcripts.find({$or: [{transcript_id: {$regex:  regex+'/i'}},
+                                            {gene_id: {$regex:  regex}},
+                                            {transcript_name: {$regex:  regex}}
+                                           ]}, options).fetch();
         // console.log(query);
         return query;
     },
