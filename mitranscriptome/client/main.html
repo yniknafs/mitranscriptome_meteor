@@ -51,12 +51,12 @@
 		<div class="form-group">
 			<input id=scrollable-dropdown-menu class="form-control typeahead" name="search" type="text" placeholder="Type to query"
 				   autocomplete="on" spellcheck="off" data-highlight="true" data-limit=80
-				   data-source="search" data-selected="selected" data-template="genes"/>
+				   data-source="search" data-selected="selected" data-template="gene_typeahead_item"/>
 		</div>
 	</div>
 </template>
 
-<template name="genes">
+<template name="gene_typeahead_item">
   {{#with obj}}
     <em>Gene ID:</em> {{ gene_id }}<br/>
     <em>Alias:</em> {{ alias }}
@@ -69,9 +69,15 @@
 		<div class="form-group">
 			<input id=scrollable-dropdown-menu class="form-control typeahead" name="search" type="text" placeholder="Type to query"
 				   autocomplete="on" spellcheck="off" data-highlight="true" data-limit=80
-				   data-source="search" data-selected="selected"/>
+				   data-source="search" data-selected="selected" data-template="analysis_typeahead_item"/>
 		</div>
 	</div>
+</template>
+
+<template name="analysis_typeahead_item">
+  {{#with obj}}
+    {{name}}
+  {{/with}}
 </template>
 
 <template name="analysis_table">

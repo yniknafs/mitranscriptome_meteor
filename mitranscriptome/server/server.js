@@ -22,13 +22,8 @@ Meteor.methods({
     } else {
       options.limit = 50;
     }
-
     var regex = new RegExp(query);
-    var query = Aliases.find({$or: [
-        { alias: {$regex: regex } },
-        { gene_id: {$regex:  regex} }]
-      }, options).fetch();
-
+    var query = Aliases.find({ alias: {$regex: regex} }).fetch();
     return query;
   },
   searchAnalysis: function(query, options) {
