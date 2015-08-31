@@ -14,6 +14,7 @@ import argparse
 import subprocess
 import collections
 import numpy as np
+from operator import itemgetter
 
 TRANSCRIPTS_COLLECTION = 'Transcripts'
 GENES_COLLECTION = 'Genes'
@@ -22,6 +23,7 @@ SAMPLES_COLLECTION = 'Samples'
 EXPRESSION_TRANSCRIPT_COLLECTION = 'ExpressionTranscript'
 EXPRESSION_GENE_COLLECTION = 'ExpressionGene'
 SSEA_TRANSCRIPT_COLLECTION = 'SSEATranscript'
+SSEA_GENE_COLLECTION = 'SSEAGene'
 SSEA_GENE_COLLECTION = 'SSEAGene'
 ANALYSES_COLLECTION = 'Analyses'
 
@@ -133,6 +135,36 @@ def convert_transcript_to_gene_expression(transcripts_file, expression_file, out
             fields.extend(map(str, v))
             print >>f, sep.join(fields)
 
+def convert_transcript_to_gene_ssea(ssea_file, sep='\t'):
+    # build mapping of transcript_id to gene_id
+    f = open(ssea_file)
+    header_fields = f.next().strip().split(sep)
+    ssea_dict = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
+    for line in f:
+        fields = line.strip().split(sep)
+        analysis_id = fields[header_fields.index('analysis_id')]
+        t_id = fields[header_fields.index('transcript_id')]
+        g_id = fields[header_fields.index('gene_id')]
+        frac = float(fields[header_fields.index('frac')])
+        fdr = float(fields[header_fields.index('fdr')])
+        ssea_dict[analysis_id][g_id].append((t_id, frac, fdr))
+    f.close()
+
+    for analysis_id in ssea_dict.iterkeys():
+        for g_id in ssea_dict[analysis_id].iterkeys():
+            scores = ssea_dict[analysis_id][g_id]
+            scores = sorted(scores, key=itemgetter(1))
+            d = {
+                'gene_id':g_id,
+                'frac': [x[1] for x in scores],
+                'fdr': [x[2] for x in scores],
+                'transcript_ids': [x[0] for x in scores],
+                'analysis_id': analysis_id
+            }
+            yield json.dumps(d)
+
+
+
 def run_mongoimport(args, json_iter, coll, tmp_json='tmp.json'):
     with open(tmp_json, 'w') as f:
         for json_str in json_iter:
@@ -195,10 +227,15 @@ if __name__ == '__main__':
         run_mongoimport(args, parse_matrix('expr.gene.tmp.txt', args.sep),
                         EXPRESSION_GENE_COLLECTION, 'expr.gene.tmp.json')
 
-    # import ssea results
+    # import ssea trasncript results
     if args.ssea_file:
         run_mongoimport(args, parse_tabular(args.ssea_file, args.sep),
-                        SSEA_TRANSCRIPT_COLLECTION, 'ssea.tmp.json')
+                        SSEA_TRANSCRIPT_COLLECTION, 'ssea.transcript.tmp.json')
+
+        # import ssea gene results
+        run_mongoimport(args, convert_transcript_to_gene_ssea(args.ssea_file),
+                        SSEA_GENE_COLLECTION, 'ssea.gene.tmp.json')
+
 
     # import analysis results
     if args.analyses_file:
