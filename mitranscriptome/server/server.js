@@ -3,21 +3,6 @@ Meteor.startup(function () {
 });
 
 Meteor.methods({
-  searchGene: function(query, options) {
-    options = options || {};
-    // guard against client-side DOS: hard limit to 50
-    if (options.limit) {
-      options.limit = Math.min(50, Math.abs(options.limit));
-    } else {
-      options.limit = 50;
-    }
-    var regex = new RegExp(query);
-    var query = Aliases.find({$or: [
-        { alias: {$regex:  regex + '/i'} },
-        { gene_id: {$regex:  regex} }
-      ]}, options).fetch();
-    return query;
-  },
   getSamples: function() {
     return Samples.find().fetch();
   },
@@ -29,7 +14,24 @@ Meteor.methods({
     // mongo query for one row of expression data
     return ExpressionTranscript.findOne({ key: transcript_id });
   },
-  analysis_search: function(query, options) {
+  searchGene: function(query, options) {
+    options = options || {};
+    // guard against client-side DOS: hard limit to 50
+    if (options.limit) {
+      options.limit = Math.min(50, Math.abs(options.limit));
+    } else {
+      options.limit = 50;
+    }
+
+    var regex = new RegExp(query);
+    var query = Aliases.find({$or: [
+        { alias: {$regex: regex } },
+        { gene_id: {$regex:  regex} }]
+      }, options).fetch();
+
+    return query;
+  },
+  searchAnalysis: function(query, options) {
     options = options || {};
     // guard against client-side DOS: hard limit to 50
     if (options.limit) {

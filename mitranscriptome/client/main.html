@@ -56,6 +56,13 @@
 	</div>
 </template>
 
+<template name="genes">
+  {{#with obj}}
+    <em>Gene ID:</em> {{ gene_id }}<br/>
+    <em>Alias:</em> {{ alias }}
+  {{/with}}
+</template>
+
 <template name="analysis_typeahead">
 	<div>
 		<h2>Select an Analysis</h2>
@@ -65,14 +72,6 @@
 				   data-source="search" data-selected="selected"/>
 		</div>
 	</div>
-</template>
-
-<template name="genes">
-  {{#with obj}}
-    <p>{{gene_id}}</p>
-    <p>{{transcript_id}}</p>
-    <p>{{transcript_name}}</p>
-  {{/with}}
 </template>
 
 <template name="analysis_table">

@@ -27,12 +27,6 @@ Template.analysis_table.events({
   }
 });
 
-Template.geneview.helpers({
-  selected_gene: function () {
-    return Session.get("selectedGene");
-  }
-});
-
 Template.geneview.onRendered(function () {
   var x = [];
   var y = [];
@@ -50,7 +44,7 @@ Template.geneview.onRendered(function () {
     // fancy d3 to subdivide column metadata into arrays by tissue type
     // TODO: this code can be precomputed since DB is not changing
     var nested_data = d3.nest()
-      .key(function(d) { return d.tissue; })
+      .key(function(d) { return d.tissue_type; })
       .entries(cols);
 
     // build one box for each tissue type
@@ -68,13 +62,13 @@ Template.geneview.onRendered(function () {
     });
 
     // box plot
-    // Plotly.newPlot('gene_plot', traces);
+    Plotly.newPlot('gene_plot', traces);
 
     // bar plot
-    var x = cols.map(function(el) { return el.library_id; });
-    var y = row.value;
-    var data = [{x: x, y: y, type: 'bar'}]
-    Plotly.newPlot('gene_plot', data);
+    // var x = cols.map(function(el) { return el.library_id; });
+    // var y = row.value;
+    // var data = [{x: x, y: y, type: 'bar'}]
+    // Plotly.newPlot('gene_plot', data);
 
   });
 });
@@ -94,12 +88,11 @@ Template.heatmap.onRendered(function () {
 
 Template.gene_typeahead.helpers({
   search: function(query, sync, callback) {
-    Meteor.call('transcript_search', query, {limit: 100, sort: { transcript_id : 1 }}, function(err, res) {
+    Meteor.call('searchGene', query, {limit: 100, sort: { alias : 1 }}, function(err, res) {
       if (err) {
         console.log(err);
         return;
       }
-      console.log(res)
       callback(res.map(function(v){ return {value: v.gene_id, obj: v}; }));
     });
   },
@@ -107,27 +100,25 @@ Template.gene_typeahead.helpers({
     // event - the jQuery event object
     // suggestion - the suggestion object
     // datasetName - the name of the dataset the suggestion belongs to
-    // TODO your event handler here
-    Session.set("selectedGene", suggestion.obj.transcript_id);
+    Session.set("selectedGene", suggestion.obj.gene_id);
   }
 });
 
 Template.analysis_typeahead.helpers({
   search: function(query, sync, callback) {
-    Meteor.call('analysis_search', query, {limit: 100}, function(err, res) {
+    Meteor.call('searchAnalysis', query, {limit: 100}, function(err, res) {
       if (err) {
         console.log(err);
         return;
       }
-      callback(res.map(function(v){ return {value: v.ss_compname, obj: v}; }));
+      callback(res.map(function(v){ return {value: v.analysis_id, obj: v}; }));
     });
   },
   selected: function(event, suggestion, datasetName) {
     // event - the jQuery event object
     // suggestion - the suggestion object
     // datasetName - the name of the dataset the suggestion belongs to
-    // TODO your event handler here
-    Session.set("selectedAnalysis", suggestion.obj.ss_compname);
+    Session.set("selectedAnalysis", suggestion.obj.analysis_id);
   }
 });
 
