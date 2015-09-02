@@ -4,9 +4,9 @@ Meteor.isClient && Template.registerHelper('TabularTables', TabularTables);
 
 TabularTables.Analysis = new Tabular.Table({
   name: "AnalysisList",
-  collection: SSEATranscript,
+  collection: SSEAGene,
   columns: [
-    {data: "transcript_id", title: "Transcript ID"},
+    {data: "gene_id", title: "Gene ID"},
     {data: "frac", title: "Frac"}
   ]
 });

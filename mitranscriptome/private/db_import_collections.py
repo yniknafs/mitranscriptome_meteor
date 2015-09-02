@@ -226,6 +226,8 @@ if __name__ == '__main__':
                                               sep=args.sep)
         run_mongoimport(args, parse_matrix('expr.gene.tmp.txt', args.sep),
                         EXPRESSION_GENE_COLLECTION, 'expr.gene.tmp.json')
+        if not args.keeptmp:
+            os.remove('expr.gene.tmp.txt')
 
     # import ssea trasncript results
     if args.ssea_file:

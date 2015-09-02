@@ -1,3 +1,13 @@
+Meteor.startup(function () {
+  // map sample properties
+  // TODO: method to determine this from the Sample collection
+  Session.set("sample_props", [
+    { "prop_id": "sample_type", "name": "Sample Type", "checked": false },
+    { "prop_id": "tissue_type", "name": "Tissue", "checked": true },
+    { "prop_id": "cancer_progression", "name": "Cancer", "checked": false }
+  ]);
+});
+
 Tracker.autorun(function () {
   if (! Session.get("selectedGene") ) return;
   Meteor.call('getExpressionByGene',
@@ -13,20 +23,6 @@ Tracker.autorun(function () {
   });
 });
 
-Template.analysis_table.helpers({
-  selector: function() {
-    return {analysis_id: Session.get("selectedAnalysis")};
-  }
-});
-
-Template.analysis_table.events({
-  'click tbody > tr': function (event) {
-    var dataTable = $(event.target).closest('table').DataTable();
-    var rowData = dataTable.row(event.currentTarget).data();
-    Session.set("selectedGene", rowData.transcript_id);
-  }
-});
-
 Template.geneview.onRendered(function () {
   var x = [];
   var y = [];
@@ -39,12 +35,19 @@ Template.geneview.onRendered(function () {
     var row = Session.get("selectedGeneExpr");
     // currently selected samples
     var cols = Session.get("selectedSamples");
+    // sample properties
+    var props = [];
+    Session.get("sample_props").forEach(function (el, i, arr) {
+      if (el.checked) props.push(el.prop_id);
+    });
 
     // boxplot - one box for each tissue type
     // fancy d3 to subdivide column metadata into arrays by tissue type
     // TODO: this code can be precomputed since DB is not changing
     var nested_data = d3.nest()
-      .key(function(d) { return d.tissue_type; })
+      .key(function(d) {
+        return props.map(function (el) { return d[el]; }).join();
+      })
       .entries(cols);
 
     // build one box for each tissue type
@@ -71,6 +74,37 @@ Template.geneview.onRendered(function () {
     // Plotly.newPlot('gene_plot', data);
 
   });
+});
+
+Template.gene_plot_groupby.helpers({
+  properties: function() {
+    return Session.get("sample_props");
+  }
+});
+
+Template.gene_plot_groupby.events({
+  "change .bubba": function () {
+    // toggle checked
+    var sample_prop_map = d3.map(Session.get("sample_props"), key=function (x) { return x.prop_id; });
+    var prop = sample_prop_map.get(this.prop_id);
+    prop.checked = !prop.checked;
+    sample_prop_map.set(this.prop_id, prop);
+    Session.set("sample_props", sample_prop_map.values());
+  }
+});
+
+Template.analysis_table.helpers({
+  selector: function() {
+    return {analysis_id: Session.get("selectedAnalysis")};
+  }
+});
+
+Template.analysis_table.events({
+  'click tbody > tr': function (event) {
+    var dataTable = $(event.target).closest('table').DataTable();
+    var rowData = dataTable.row(event.currentTarget).data();
+    Session.set("selectedGene", rowData.gene_id);
+  }
 });
 
 Template.heatmap.onRendered(function () {

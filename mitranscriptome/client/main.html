@@ -5,28 +5,31 @@
 <body>
   <h1>Welcome to Meteor!</h1>
 
-  <div class="btn-group" role="group" aria-label="...">
-    <button type="button" class="btn btn-default">Left</button>
-    <button type="button" class="btn btn-default">Middle</button>
-    <button type="button" class="btn btn-default">Right</button>
-  </div>
-
-  {{> analysis_typeahead}}
   {{> gene_typeahead}}
-
-  {{> analysis_table}}
-
   {{> geneview }}
 
+  {{> analysis_typeahead}}
+  {{> analysis_table}}
+
   {{> heatmap divid="heatmap"}}
-
-
 
 </body>
 
 <template name="geneview">
   <h4>{{ selected_gene }}</h4>
+  {{> gene_plot_groupby }}
   <div id="gene_plot"></div>
+</template>
+
+<template name="gene_plot_groupby">
+  <div class="btn-group" data-toggle="buttons">
+    {{#each properties}}
+    <label>
+      <input class="bubba" type="checkbox" checked="{{checked}}"/>
+      {{name}}
+    </label>
+    {{/each}}
+  </div>
 </template>
 
 <template name="heatmap">
