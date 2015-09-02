@@ -7,6 +7,9 @@
 meteor-platform
 msavin:mongol
 aldeed:tabular
-twbs:bootstrap
 sergeyt:typeahead
 d3js:d3
+flemay:less-autoprefixer
+jeremy:selectize
+semantic:ui
+twbs:bootstrap

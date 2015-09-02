@@ -3,7 +3,7 @@
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
+  <h1>MiTranscriptome</h1>
 
   {{> gene_typeahead}}
   {{> geneview }}
@@ -22,13 +22,15 @@
 </template>
 
 <template name="gene_plot_groupby">
-  <div class="btn-group" data-toggle="buttons">
-    {{#each properties}}
-    <label>
-      <input class="bubba" type="checkbox" checked="{{checked}}"/>
-      {{name}}
-    </label>
-    {{/each}}
+  <div class="ui multiple selection dropdown">
+    <input type="hidden" name="groupby">
+    <i class="dropdown icon"></i>
+    <div class="default text">Grouping Order</div>
+    <div class="menu">
+      {{#each properties}}
+        <div class="item" data-value="{{prop_id}}">{{name}}</div>
+      {{/each}}
+    </div>
   </div>
 </template>
 

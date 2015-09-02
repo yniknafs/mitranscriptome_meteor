@@ -1,11 +1,4 @@
 Meteor.startup(function () {
-  // map sample properties
-  // TODO: method to determine this from the Sample collection
-  Session.set("sample_props", [
-    { "prop_id": "sample_type", "name": "Sample Type", "checked": false },
-    { "prop_id": "tissue_type", "name": "Tissue", "checked": true },
-    { "prop_id": "cancer_progression", "name": "Cancer", "checked": false }
-  ]);
 });
 
 Tracker.autorun(function () {
@@ -36,11 +29,7 @@ Template.geneview.onRendered(function () {
     // currently selected samples
     var cols = Session.get("selectedSamples");
     // sample properties
-    var props = [];
-    Session.get("sample_props").forEach(function (el, i, arr) {
-      if (el.checked) props.push(el.prop_id);
-    });
-
+    var props = Session.get("groupByProps") || [];
     // boxplot - one box for each tissue type
     // fancy d3 to subdivide column metadata into arrays by tissue type
     // TODO: this code can be precomputed since DB is not changing
@@ -48,6 +37,7 @@ Template.geneview.onRendered(function () {
       .key(function(d) {
         return props.map(function (el) { return d[el]; }).join();
       })
+      .sortKeys(d3.ascending)
       .entries(cols);
 
     // build one box for each tissue type
@@ -76,20 +66,23 @@ Template.geneview.onRendered(function () {
   });
 });
 
-Template.gene_plot_groupby.helpers({
-  properties: function() {
-    return Session.get("sample_props");
-  }
+Template.gene_plot_groupby.onRendered(function () {
+  // instantiate semantic ui module
+  $('.ui.dropdown').dropdown({
+    on: 'hover',
+    onChange: function(val) {
+      Session.set("groupByProps", val.split(","));
+    }
+  });
 });
 
-Template.gene_plot_groupby.events({
-  "change .bubba": function () {
-    // toggle checked
-    var sample_prop_map = d3.map(Session.get("sample_props"), key=function (x) { return x.prop_id; });
-    var prop = sample_prop_map.get(this.prop_id);
-    prop.checked = !prop.checked;
-    sample_prop_map.set(this.prop_id, prop);
-    Session.set("sample_props", sample_prop_map.values());
+Template.gene_plot_groupby.helpers({
+  properties: function() {
+    return [
+      { "prop_id": "sample_type", "name": "Sample Type" },
+      { "prop_id": "tissue_type", "name": "Tissue" },
+      { "prop_id": "cancer_progression", "name": "Cancer" }
+    ];
   }
 });
 
