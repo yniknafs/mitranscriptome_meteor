@@ -1,75 +1,69 @@
 <head>
-  <title>mitranscriptome</title>
+  <title>MiTranscriptome</title>
+  <link rel="shortcut icon" type="image/x-icon" href="block_m_icon3.png">
 </head>
 
 <body>
-  <h1>MiTranscriptome</h1>
-
-  {{> gene_typeahead}}
-  {{> geneview }}
-
-  {{> analysis_typeahead}}
-  {{> analysis_table}}
-
-  {{> heatmap divid="heatmap"}}
-
-</body>
-
-<template name="geneview">
-  <h4>{{ selected_gene }}</h4>
-  {{> gene_plot_groupby }}
-  <div id="gene_plot"></div>
-</template>
-
-<template name="gene_plot_groupby">
-  <div class="ui multiple selection dropdown">
-    <input type="hidden" name="groupby">
-    <i class="dropdown icon"></i>
-    <div class="default text">Grouping Order</div>
-    <div class="menu">
-      {{#each properties}}
-        <div class="item" data-value="{{prop_id}}">{{name}}</div>
-      {{/each}}
+  <div class="ui inverted menu">
+    <div class="header item"><img src="block_m_white.png"/></div>
+    <div class="item">MiTranscriptome</div>
+    <div class="active item">Link</div>
+    <a class="item">Link</a>
+    <div class="ui dropdown item">
+      Dropdown
+      <i class="dropdown icon"></i>
+      <div class="menu">
+        <div class="item">Action</div>
+        <div class="item">Another Action</div>
+        <div class="item">Something else here</div>
+        <div class="divider"></div>
+        <div class="item">Separated Link</div>
+        <div class="divider"></div>
+        <div class="item">One more separated link</div>
+      </div>
+    </div>
+    <div class="right menu">
+      <div class="item">
+        <div class="ui transparent inverted icon input">
+          <i class="search icon"></i>
+          <input type="text" placeholder="Search">
+        </div>
+      </div>
+      <a class="item">Help</a>
     </div>
   </div>
-</template>
 
-<template name="heatmap">
-  <div id={{divid}}></div>
-</template>
+  <div class="ui grid">
+    <div class="four wide column">
+      <div class="ui top attached inverted vertical fluid menu">
+        <a class="active item" data-tab="investigate">Investigate</a>
+        <a class="item" data-tab="discover">Discover</a>
+        <a class="item" data-tab="browse">Genome Browser</a>
+      </div>
+    </div>
+    <div class="twelve wide column">
+      <div class="ui segment">
+        <div class="ui bottom attached active tab" data-tab="investigate">
+          {{> investigate }}
+        </div>
+        <div class="ui bottom attached tab" data-tab="discover">
+          <h2 class="ui dividing header">Discover</h2>
+          <div class="ui container">
+            {{> analysis_typeahead}}
+            {{> analysis_table}}
+          </div>
+        </div>
+        <div class="ui bottom attached tab" data-tab="browse">
+          <h2 class="ui dividing header">Genome Browser</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
 
-<template name="transcript">
-  <li>
-    <span class="text">{{transcript_id}}</span>
-    <span class="text">{{chrom}}</span>
-  </li>
-</template>
-
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
-</template>
-
-<template name="gene_typeahead">
-	<div>
-		<h2>Select a Gene</h2>
-		<div class="form-group">
-			<input id=scrollable-dropdown-menu class="form-control typeahead" name="search" type="text" placeholder="Type to query"
-				   autocomplete="on" spellcheck="off" data-highlight="true" data-limit=80
-				   data-source="search" data-selected="selected" data-template="gene_typeahead_item"/>
-		</div>
-	</div>
-</template>
-
-<template name="gene_typeahead_item">
-  {{#with obj}}
-    <em>Gene ID:</em> {{ gene_id }}<br/>
-    <em>Alias:</em> {{ alias }}
-  {{/with}}
-</template>
 
 <template name="analysis_typeahead">
-	<div>
+	<div class="ui container">
 		<h2>Select an Analysis</h2>
 		<div class="form-group">
 			<input id=scrollable-dropdown-menu class="form-control typeahead" name="search" type="text" placeholder="Type to query"
@@ -88,4 +82,8 @@
 <template name="analysis_table">
   {{> tabular table=TabularTables.Analysis
     class="table table-striped table-bordered table-condensed table-hover" selector=selector}}
+</template>
+
+<template name="heatmap">
+  <div id={{divid}}></div>
 </template>
