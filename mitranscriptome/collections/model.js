@@ -31,14 +31,11 @@ TabularTables.Transcript = new Tabular.Table({
   name: "SSEATranscriptTable",
   collection: SSEATranscript,
   columns: [
+    { data: "transcript_id", title: "Transcript ID"},
     { data: "analysis_id", title: "Analysis" },
-    { data: "frac", title: "Fracs" },
-    { data: "fdr", title: "FDRs" }
-  ],
-  createdRow: function( row, data, dataIndex ) {
-    // set row class based on row data
-    console.log('row ' + JSON.stringify(data));
-  }
+    { data: "frac", title: "Frac" },
+    { data: "fdr", title: "FDR" }
+  ]
 });
 
 TabularTables.Analysis = new Tabular.Table({

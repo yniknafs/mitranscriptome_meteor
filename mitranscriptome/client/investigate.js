@@ -6,13 +6,13 @@ Tracker.autorun(function () {
     Session.get('selectedGeneId'),
     function(err, res) {
       Session.set('selectedGene', res);
-      Session.set('plotId', 'gene');
+      Session.set('selectedIsoformId', 'gene');
     }
   );
 });
 
 Template.investigate.onRendered(function () {
-  $('.ui.checkbox').checkbox();
+  $('.ui.accordion').accordion();
 });
 
 Template.investigate.helpers({
@@ -62,7 +62,7 @@ Template.expression_plot.onRendered(function () {
     on: 'hover',
     action: 'select',
     onChange: function(val) {
-      Session.set('plotId', val);
+      Session.set('selectedIsoformId', val);
     }
   });
   $('#dropdown-groupby').dropdown({
@@ -78,15 +78,15 @@ Template.expression_plot.onRendered(function () {
     if (! Session.get('selectedGene') ) return;
     // expression data for gene / isoform
     var g = Session.get('selectedGene');
-    var plotId = Session.get('plotId')
+    var selectedIsoformId = Session.get('selectedIsoformId')
     var plotTitle;
     var exprData;
-    if (plotId === 'gene') {
+    if (selectedIsoformId === 'gene') {
       exprData = g.expression.gene;
       plotTitle = 'Gene: ' + g.gene.gene_id;
     } else {
-      exprData = g.expression.transcripts[plotId];
-      plotTitle = 'Isoform: ' + g.transcripts[plotId].transcript_id + ' (' + g.gene.gene_id + ')';
+      exprData = g.expression.transcripts[selectedIsoformId];
+      plotTitle = 'Isoform: ' + g.transcripts[selectedIsoformId].transcript_id + ' (' + g.gene.gene_id + ')';
     }
     // currently selected samples
     var samples = Session.get("selectedSamples");

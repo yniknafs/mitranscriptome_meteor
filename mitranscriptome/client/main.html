@@ -35,8 +35,21 @@
 
   <div class="ui grid">
     <div class="four wide column">
-      <div class="ui top attached inverted vertical fluid menu">
-        <a class="active item" data-tab="investigate">Investigate</a>
+      <div class="ui top attached inverted fluid vertical menu">
+        <div class="item">
+          <div class="ui fluid icon input">
+            <input class="typeahead"
+              name="search" type="text"
+              placeholder="Search... (ex. MYC)"
+              autocomplete="on" spellcheck="off"
+              data-highlight="true" data-limit=80
+              data-source="search" data-selected="selected"
+              data-template="gene_search_result"/>
+            <i class="inverted search icon"></i>
+          </div>
+        </div>
+        <div class="inverted divider"></div>
+        <a class="item" data-tab="investigate">Investigate</a>
         <a class="item" data-tab="discover">Discover</a>
         <a class="item" data-tab="browse">Genome Browser</a>
       </div>
@@ -61,6 +74,12 @@
   </div>
 </body>
 
+<template name="gene_search_result">
+  {{#with obj}}
+    <em>Gene ID:</em> {{ gene_id }}<br/>
+    <em>Alias:</em> {{ alias }}
+  {{/with}}
+</template>
 
 <template name="analysis_typeahead">
 	<div class="ui container">

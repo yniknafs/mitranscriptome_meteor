@@ -1,35 +1,41 @@
 
 <template name="investigate">
-  <div class="ui menu">
-    <div class="item">
-      <div class="ui icon input">
-    		<input class="form-control typeahead"
-          name="search" type="text"
-          placeholder="Search gene (e.g. MYC)"
-    			autocomplete="on" spellcheck="off"
-          data-highlight="true" data-limit=80
-    			data-source="search" data-selected="selected"
-          data-template="gene_search_result"/>
-        <i class="search icon"></i>
-      </div>
-  	</div>
-    <div class="item">
-      <div class="ui toggle checkbox">
-        <input type="checkbox" name="public">
-        <label>Isoform View</label>
-      </div>
-    </div>
-  </div>
+
+  <h4 class="ui dividing header">Properties</h4>
+
+
+  <h4 class="ui dividing header">Expression</h4>
 
   {{> expression_plot}}
 
-  {{> ssea_table_gene }}
+  <h4 class="ui dividing header">Differential Expression Analysis</h4>
+
+  <div class="ui styled fluid accordion">
+    <div class="title active">
+      <i class="dropdown icon"></i>
+      Gene
+    </div>
+    <div class="content active">
+      <div class="transition visible">
+        {{> ssea_table_gene }}
+      </div>
+    </div>
+    <div class="title">
+      <i class="dropdown icon"></i>
+      Isoforms
+    </div>
+    <div class="content">
+      <div class="transition visible">
+        {{> ssea_table_transcript }}
+      </div>
+    </div>
+  </div>
 
 </template>
 
 <template name="expression_plot">
 
-  <div class="ui secondary menu">
+  <div class="ui menu">
 
     <div id="dropdown-isoform" class="ui selection {{#unless active}}disabled{{/unless}} dropdown item">
       <span class="text">Choose Isoform</span>
@@ -48,7 +54,7 @@
       </div>
     </div>
 
-    <div id="dropdown-groupby" class="ui multiple selection dropdown item">
+    <div id="dropdown-groupby" class="ui multiple selection {{#unless active}}disabled{{/unless}} dropdown item">
       <input type="hidden" name="groupby">
       <i class="dropdown icon"></i>
       <div class="default text">Grouping Order</div>
@@ -58,6 +64,7 @@
         {{/each}}
       </div>
     </div>
+
     <div class="item">
       <div class="ui buttons">
         <button class='ui button {{#if scaleIs "linear"}}active{{/if}}'
@@ -71,11 +78,4 @@
 
   <div id="plotly_expression"></div>
 
-</template>
-
-<template name="gene_search_result">
-  {{#with obj}}
-    <em>Gene ID:</em> {{ gene_id }}<br/>
-    <em>Alias:</em> {{ alias }}
-  {{/with}}
 </template>

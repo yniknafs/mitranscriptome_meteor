@@ -16,6 +16,25 @@ Template.body.onRendered(function () {
   $('.menu .item').tab();
 });
 
+Template.body.helpers({
+  search: function(query, sync, callback) {
+    Meteor.call('searchGene', query, {limit: 100, sort: { alias : 1 }}, function(err, res) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      callback(res.map(function(v){ return {value: v.gene_id, obj: v}; }));
+    });
+  },
+  selected: function(event, suggestion, datasetName) {
+    // event - the jQuery event object
+    // suggestion - the suggestion object
+    // datasetName - the name of the dataset the suggestion belongs to
+    Session.set("selectedGeneId", suggestion.obj.gene_id);
+  }
+});
+
+
 Template.analysis_table.helpers({
   selector: function() {
     return {analysis_id: Session.get("selectedAnalysis")};
