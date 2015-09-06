@@ -6,6 +6,34 @@ Meteor.methods({
   getSamples: function() {
     return Samples.find().fetch();
   },
+  selectGene: function(gene_id) {
+    // get gene aliases
+    aliases = Aliases.find({ gene_id: gene_id },
+      { fields: { _id: 0, alias: 1 } }).fetch();
+    aliases = _.map(aliases, function(a) { return a.alias; });
+    // get gene metadata
+    gene = Genes.findOne({ gene_id: gene_id });
+    // get gene expression
+    exprGene = ExpressionGene.findOne({ key: gene_id });
+    // get transcript metadata
+    transcripts = Transcripts.find({ gene_id: gene_id }).fetch();
+    transcripts = _.indexBy(transcripts, 'transcript_id');
+    // get transcript expression
+    exprTranscript = ExpressionTranscript.find({
+      key: { $in: gene.transcript_ids }
+    }).fetch();
+    exprTranscript = _.indexBy(exprTranscript, 'key');
+
+    return {
+      aliases: aliases,
+      gene: gene,
+      transcripts: transcripts,
+      expression: {
+        gene: exprGene,
+        transcripts: exprTranscript
+      }
+    };
+  },
   getExpressionByGene: function(gene_id) {
     // mongo query for one row of expression data
     return ExpressionGene.findOne({ key: gene_id });

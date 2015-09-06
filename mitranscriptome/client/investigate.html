@@ -1,8 +1,9 @@
 
 <template name="investigate">
-  <h2 class="ui dividing header">Investigate</h2>
-
-  <div class="ui secondary menu">
+  <div class="ui menu">
+    <div class="item">
+      Investigate
+    </div>
     <div class="item">
       <div class="ui icon input">
     		<input class="form-control typeahead"
@@ -15,6 +16,12 @@
         <i class="search icon"></i>
       </div>
   	</div>
+    <div class="item">
+      <div class="ui toggle checkbox">
+        <input type="checkbox" name="public">
+        <label>Isoform View</label>
+      </div>
+    </div>
   </div>
 
   {{> expression_plot}}
@@ -23,11 +30,27 @@
 
 <template name="expression_plot">
 
-  <div id="plotly_expression"></div>
-
   <div class="ui secondary menu">
+
+    <div id="dropdown-isoform" class="ui selection {{#unless active}}disabled{{/unless}} dropdown item">
+      <span class="text">Choose Isoform</span>
+      <input name="gender" type="hidden" value="default">
+      <i class="dropdown icon"></i>
+      <div class="menu">
+        <div class="header">Gene</div>
+        {{#if active}}
+          <div class="item" data-value="gene">{{ gene.gene_id }}</div>
+        {{/if}}
+        <div class="divider"></div>
+        <div class="header">Isoforms</div>
+        {{#each isoforms}}
+          <div class="item" data-value="{{transcript_id}}">{{ transcript_id }}</div>
+        {{/each}}
+      </div>
+    </div>
+
     <div class="item">
-      <div class="ui multiple selection dropdown">
+      <div id="dropdown-groupby" class="ui multiple selection dropdown">
         <input type="hidden" name="groupby">
         <i class="dropdown icon"></i>
         <div class="default text">Grouping Order</div>
@@ -48,6 +71,9 @@
       </div>
     </div>
   </div>
+
+  <div id="plotly_expression"></div>
+
 </template>
 
 <template name="gene_search_result">

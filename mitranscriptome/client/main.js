@@ -4,10 +4,12 @@ Meteor.startup(function(){
 
   // initialize Session variables
   Meteor.call('getSamples', function(err, res) {
-    Session.set("selectedSamples", res);
+    Session.set('selectedSamples', res);
   });
+  Session.setDefault('selectedGeneId', undefined);
   Session.setDefault('selectedGene', undefined);
   Session.setDefault('expressionPlotScale', 'linear');
+  Session.setDefault('plotId', 'gene');
 });
 
 Template.body.onRendered(function () {

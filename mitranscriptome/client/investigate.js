@@ -1,20 +1,17 @@
+
 Tracker.autorun(function () {
-  if (! Session.get("selectedGene") ) return;
-  Meteor.call('getExpressionByGene',
-              Session.get("selectedGene"),
-              function(err, res) {
-                Session.set("selectedGeneExpr", res);
-              });
+  if (! Session.get("selectedGeneId") ) return;
+
+  Meteor.call('selectGene',
+    Session.get('selectedGeneId'),
+    function(err, res) {
+      Session.set('selectedGene', res);
+    }
+  );
 });
 
 Template.investigate.onRendered(function () {
-  // instantiate semantic ui modules
-  $('.ui.dropdown').dropdown({
-    on: 'hover',
-    onChange: function(val) {
-      Session.set("groupByProps", val.split(","));
-    }
-  });
+  $('.ui.checkbox').checkbox();
 });
 
 Template.investigate.helpers({
@@ -31,14 +28,22 @@ Template.investigate.helpers({
     // event - the jQuery event object
     // suggestion - the suggestion object
     // datasetName - the name of the dataset the suggestion belongs to
-    Session.set("selectedGene", suggestion.obj.gene_id);
+    Session.set("selectedGeneId", suggestion.obj.gene_id);
   }
 });
 
 Template.expression_plot.helpers({
+  active: function() {
+    return Session.get('selectedGene') ? true : false;
+  },
+  gene: function() {
+    return Session.get('selectedGene').gene;
+  },
+  isoforms: function() {
+    if ( !Session.get('selectedGene') ) return [];
+    return _.values(Session.get('selectedGene').transcripts);
+  },
   scaleIs: function(scale) {
-    console.log("hello");
-    console.log(Session.get("expressionPlotScale"));
     return Session.get("expressionPlotScale") === scale;
   },
   properties: function() {
@@ -51,15 +56,39 @@ Template.expression_plot.helpers({
 });
 
 Template.expression_plot.onRendered(function () {
+  // instantiate semantic ui modules
+  $('#dropdown-isoform').dropdown({
+    on: 'hover',
+    action: 'select',
+    onChange: function(val) {
+      Session.set('plotId', val);
+    }
+  });
+  $('#dropdown-groupby').dropdown({
+    on: 'hover',
+    onChange: function(val) {
+      Session.set("groupByProps", val.split(","));
+    }
+  });
+
   // expression plot
   Tracker.autorun(function () {
-    if (! Session.get("selectedGeneExpr")) return;
-    if (! Session.get("selectedSamples")) return;
-
-    // expression data for gene
-    var row = Session.get("selectedGeneExpr");
+    if (! Session.get('selectedSamples') ) return;
+    if (! Session.get('selectedGene') ) return;
+    // expression data for gene / isoform
+    var g = Session.get('selectedGene');
+    var plotId = Session.get('plotId')
+    var row;
+    var plotTitle;
+    if (plotId === 'gene') {
+      row = g.expression.gene;
+      plotTitle = 'Gene: ' + g.gene.gene_id;
+    } else {
+      row = g.expression.transcripts[plotId];
+      plotTitle = 'Isoform: ' + g.transcripts[plotId].transcript_id + ' (' + g.gene.gene_id + ')';
+    }
     // currently selected samples
-    var cols = Session.get("selectedSamples");
+    var samples = Session.get("selectedSamples");
     // sample properties
     var props = Session.get("groupByProps") || [];
     // boxplot - one box for each tissue type
@@ -69,7 +98,7 @@ Template.expression_plot.onRendered(function () {
         return props.map(function (el) { return d[el]; }).join();
       })
       .sortKeys(d3.ascending)
-      .entries(cols);
+      .entries(samples);
 
     // build one box for each tissue type
     var traces = [];
@@ -87,7 +116,7 @@ Template.expression_plot.onRendered(function () {
 
     // plot layout
     var layout = {
-      title: Session.get("selectedGene"),
+      title: plotTitle,
       yaxis: {
         title: "FPKM",
         autoscale: true,
@@ -99,7 +128,7 @@ Template.expression_plot.onRendered(function () {
     Plotly.newPlot('plotly_expression', traces, layout);
 
     // bar plot
-    // var x = cols.map(function(el) { return el.library_id; });
+    // var x = samples.map(function(el) { return el.library_id; });
     // var y = row.value;
     // var data = [{x: x, y: y, type: 'bar'}]
     // Plotly.newPlot('gene_plot', data);
