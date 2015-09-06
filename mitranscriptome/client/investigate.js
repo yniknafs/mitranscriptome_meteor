@@ -6,6 +6,7 @@ Tracker.autorun(function () {
     Session.get('selectedGeneId'),
     function(err, res) {
       Session.set('selectedGene', res);
+      Session.set('plotId', 'gene');
     }
   );
 });
@@ -78,13 +79,13 @@ Template.expression_plot.onRendered(function () {
     // expression data for gene / isoform
     var g = Session.get('selectedGene');
     var plotId = Session.get('plotId')
-    var row;
     var plotTitle;
+    var exprData;
     if (plotId === 'gene') {
-      row = g.expression.gene;
+      exprData = g.expression.gene;
       plotTitle = 'Gene: ' + g.gene.gene_id;
     } else {
-      row = g.expression.transcripts[plotId];
+      exprData = g.expression.transcripts[plotId];
       plotTitle = 'Isoform: ' + g.transcripts[plotId].transcript_id + ' (' + g.gene.gene_id + ')';
     }
     // currently selected samples
@@ -104,7 +105,7 @@ Template.expression_plot.onRendered(function () {
     var traces = [];
     nested_data.forEach(function (el1) {
       var vals = el1.values.map(function (el2) {
-        return row.value[el2._id];
+        return exprData.value[el2._id];
       });
 
       traces.push({
@@ -129,7 +130,7 @@ Template.expression_plot.onRendered(function () {
 
     // bar plot
     // var x = samples.map(function(el) { return el.library_id; });
-    // var y = row.value;
+    // var y = exprData.value;
     // var data = [{x: x, y: y, type: 'bar'}]
     // Plotly.newPlot('gene_plot', data);
   });

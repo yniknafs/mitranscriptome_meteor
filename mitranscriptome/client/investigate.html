@@ -49,16 +49,14 @@
       </div>
     </div>
 
-    <div class="item">
-      <div id="dropdown-groupby" class="ui multiple selection dropdown">
-        <input type="hidden" name="groupby">
-        <i class="dropdown icon"></i>
-        <div class="default text">Grouping Order</div>
-        <div class="menu">
-          {{#each properties}}
-            <div class="item" data-value="{{prop_id}}">{{name}}</div>
-          {{/each}}
-        </div>
+    <div id="dropdown-groupby" class="ui multiple selection {{#unless active}}disabled{{/unless}} dropdown item">
+      <input type="hidden" name="groupby">
+      <i class="dropdown icon"></i>
+      <div class="default text">Grouping Order</div>
+      <div class="menu">
+        {{#each properties}}
+          <div class="item" data-value="{{prop_id}}">{{name}}</div>
+        {{/each}}
       </div>
     </div>
     <div class="item">
