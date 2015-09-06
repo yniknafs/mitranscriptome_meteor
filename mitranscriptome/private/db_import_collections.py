@@ -140,30 +140,35 @@ def convert_transcript_to_gene_ssea(ssea_file, sep='\t'):
     f = open(ssea_file)
     header_fields = f.next().strip().split(sep)
     ssea_dict = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
+
+    a_id_idx = header_fields.index('analysis_id')
+    t_id_idx = header_fields.index('transcript_id')
+    g_id_idx = header_fields.index('gene_id')
+    frac_idx = header_fields.index('frac')
+    fdr_idx = header_fields.index('fdr')
     for line in f:
         fields = line.strip().split(sep)
-        analysis_id = fields[header_fields.index('analysis_id')]
-        t_id = fields[header_fields.index('transcript_id')]
-        g_id = fields[header_fields.index('gene_id')]
-        frac = float(fields[header_fields.index('frac')])
-        fdr = float(fields[header_fields.index('fdr')])
+        analysis_id = fields[a_id_idx]
+        t_id = fields[t_id_idx]
+        g_id = fields[g_id_idx]
+        frac = float(fields[frac_idx])
+        fdr = float(fields[fdr_idx])
         ssea_dict[analysis_id][g_id].append((t_id, frac, fdr))
     f.close()
 
     for analysis_id in ssea_dict.iterkeys():
         for g_id in ssea_dict[analysis_id].iterkeys():
-            scores = ssea_dict[analysis_id][g_id]
-            scores = sorted(scores, key=itemgetter(1))
-            d = {
-                'gene_id':g_id,
-                'frac': [x[1] for x in scores],
-                'fdr': [x[2] for x in scores],
-                'transcript_ids': [x[0] for x in scores],
-                'analysis_id': analysis_id
-            }
+            # sort by frac
+            results = sorted(ssea_dict[analysis_id][g_id], key=itemgetter(1))
+            d = { 'analysis_id': analysis_id,
+                  'gene_id': g_id,
+                  'best_dn': { 'transcript_id': results[0][0],
+                               'frac': results[0][1],
+                               'fdr': results[0][2] },
+                  'best_up': { 'transcript_id': results[-1][0],
+                               'frac': results[-1][1],
+                               'fdr': results[-1][2] } }
             yield json.dumps(d)
-
-
 
 def run_mongoimport(args, json_iter, coll, tmp_json='tmp.json'):
     with open(tmp_json, 'w') as f:

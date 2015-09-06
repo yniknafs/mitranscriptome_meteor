@@ -1,0 +1,15 @@
+
+
+<template name="ssea_table_gene">
+  {{> tabular table=TabularTables.Gene class="ui sortable striped selectable celled small table" selector=geneTableSelector }}
+</template>
+
+<template name="bestFracDnCell">
+  {{ bubba }}
+  <div class="ui mini statistic">
+    <div class="value">{{ frac }}</div>
+    <div class="label">
+      Views
+    </div>
+  </div>
+</template>

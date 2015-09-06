@@ -2,9 +2,6 @@
 <template name="investigate">
   <div class="ui menu">
     <div class="item">
-      Investigate
-    </div>
-    <div class="item">
       <div class="ui icon input">
     		<input class="form-control typeahead"
           name="search" type="text"
@@ -26,6 +23,8 @@
 
   {{> expression_plot}}
 
+  {{> ssea_table_gene }}
+
 </template>
 
 <template name="expression_plot">
@@ -34,7 +33,7 @@
 
     <div id="dropdown-isoform" class="ui selection {{#unless active}}disabled{{/unless}} dropdown item">
       <span class="text">Choose Isoform</span>
-      <input name="gender" type="hidden" value="default">
+      <input type="hidden" name="isoform">
       <i class="dropdown icon"></i>
       <div class="menu">
         <div class="header">Gene</div>
@@ -49,7 +48,7 @@
       </div>
     </div>
 
-    <div id="dropdown-groupby" class="ui multiple selection {{#unless active}}disabled{{/unless}} dropdown item">
+    <div id="dropdown-groupby" class="ui multiple selection dropdown item">
       <input type="hidden" name="groupby">
       <i class="dropdown icon"></i>
       <div class="default text">Grouping Order</div>

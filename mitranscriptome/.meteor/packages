@@ -13,4 +13,5 @@ flemay:less-autoprefixer
 jeremy:selectize
 semantic:ui
 twbs:bootstrap
-aslagle:reactive-table
+dburles:collection-helpers
+reywood:publish-composite
