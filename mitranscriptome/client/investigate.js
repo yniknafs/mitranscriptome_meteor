@@ -15,24 +15,6 @@ Template.investigate.onRendered(function () {
   $('.ui.accordion').accordion();
 });
 
-Template.investigate.helpers({
-  search: function(query, sync, callback) {
-    Meteor.call('searchGene', query, {limit: 100, sort: { alias : 1 }}, function(err, res) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      callback(res.map(function(v){ return {value: v.gene_id, obj: v}; }));
-    });
-  },
-  selected: function(event, suggestion, datasetName) {
-    // event - the jQuery event object
-    // suggestion - the suggestion object
-    // datasetName - the name of the dataset the suggestion belongs to
-    Session.set("selectedGeneId", suggestion.obj.gene_id);
-  }
-});
-
 Template.expression_plot.helpers({
   active: function() {
     return Session.get('selectedGene') ? true : false;
@@ -46,6 +28,9 @@ Template.expression_plot.helpers({
   },
   scaleIs: function(scale) {
     return Session.get("expressionPlotScale") === scale;
+  },
+  typeIs: function(plotType) {
+    return Session.get("expressionPlotType") === plotType;
   },
   properties: function() {
     return [
@@ -92,29 +77,40 @@ Template.expression_plot.onRendered(function () {
     var samples = Session.get("selectedSamples");
     // sample properties
     var props = Session.get("groupByProps") || [];
-    // boxplot - one box for each tissue type
-    // fancy d3 to subdivide column metadata into arrays by tissue type
-    var nested_data = d3.nest()
-      .key(function(d) {
-        return props.map(function (el) { return d[el]; }).join();
-      })
-      .sortKeys(d3.ascending)
-      .entries(samples);
+    // plot type (bar or box)
+    var plotType = Session.get("expressionPlotType");
 
-    // build one box for each tissue type
     var traces = [];
-    nested_data.forEach(function (el1) {
-      var vals = el1.values.map(function (el2) {
-        return exprData.value[el2._id];
-      });
 
-      traces.push({
-        'y': vals,
-        type: 'box',
-        name: el1.key
-      });
-    });
+    if (plotType === 'box') {
+      // boxplot - one box for each tissue type
+      // fancy d3 to subdivide column metadata into arrays by tissue type
+      var nested_data = d3.nest()
+        .key(function(d) {
+          return props.map(function (el) { return d[el]; }).join();
+        })
+        .sortKeys(d3.ascending)
+        .entries(samples);
 
+      // build one box for each tissue type
+      nested_data.forEach(function (el1) {
+        var vals = el1.values.map(function (el2) {
+          return exprData.value[el2._id];
+        });
+
+        traces.push({
+          'y': vals,
+          type: 'box',
+          name: el1.key
+        });
+      });
+    } else  {
+      // bar plot
+      var x = samples.map(function(el) { return el.library_id; });
+      var y = exprData.value;
+      traces.push({x: x, y: y, type: 'bar'});
+    }
+    
     // plot layout
     var layout = {
       title: plotTitle,
@@ -128,16 +124,14 @@ Template.expression_plot.onRendered(function () {
     // box plot
     Plotly.newPlot('plotly_expression', traces, layout);
 
-    // bar plot
-    // var x = samples.map(function(el) { return el.library_id; });
-    // var y = exprData.value;
-    // var data = [{x: x, y: y, type: 'bar'}]
-    // Plotly.newPlot('gene_plot', data);
   });
 });
 
 Template.expression_plot.events({
-  'click .ui.buttons > .ui.button': function(event) {
+  'click .plot-scale-buttons > .ui.button': function(event) {
     Session.set('expressionPlotScale', event.target.value);
+  },
+  'click .plot-type-buttons > .ui.button': function(event) {
+    Session.set('expressionPlotType', event.target.value);
   }
 });

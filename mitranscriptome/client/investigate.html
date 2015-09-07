@@ -4,6 +4,8 @@
   <h4 class="ui dividing header">Properties</h4>
 
 
+
+
   <h4 class="ui dividing header">Expression</h4>
 
   {{> expression_plot}}
@@ -66,14 +68,27 @@
     </div>
 
     <div class="item">
-      <div class="ui buttons">
-        <button class='ui button {{#if scaleIs "linear"}}active{{/if}}'
-                value="linear">Linear</button>
+      <div class="ui buttons plot-scale-buttons">
+        <button class='ui button {{#if scaleIs "linear"}}active{{/if}}' value="linear">Linear</button>
         <div class="or"></div>
-        <button class='ui button {{#if scaleIs "log"}}active{{/if}}'
-                value="log">Log</button>
+        <button class='ui button {{#if scaleIs "log"}}active{{/if}}' value="log">Log</button>
       </div>
     </div>
+
+    <div class='item'>
+      <div class='ui buttons plot-type-buttons'>
+        <button class='ui button {{#if typeIs "bar"}}active{{/if}}' value='bar'>
+          <i class="bar chart icon"></i>
+          Bar
+        </button>
+        <div class='or'></div>
+        <button class='ui button {{#if typeIs "box"}}active{{/if}}' value='box'>
+          <i class="clockwise rotated h icon"></i>
+          Box
+        </button>
+      </div>
+    </div>
+
   </div>
 
   <div id="plotly_expression"></div>

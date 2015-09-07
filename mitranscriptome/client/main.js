@@ -9,7 +9,8 @@ Meteor.startup(function(){
   Session.setDefault('selectedGeneId', undefined);
   Session.setDefault('selectedGene', undefined);
   Session.setDefault('expressionPlotScale', 'linear');
-  Session.setDefault('plotId', 'gene');
+  Session.setDefault('expressionPlotType', 'box');
+  Session.setDefault('selectedIsoform', 'gene');
 });
 
 Template.body.onRendered(function () {
