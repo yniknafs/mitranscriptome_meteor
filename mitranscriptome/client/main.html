@@ -36,11 +36,22 @@
   <div class="ui grid">
     <div class="four wide column">
       <div class="ui top attached inverted fluid vertical menu">
+
+        <div class="item">
+          <div class="ui search">
+            <div class="ui fluid icon input">
+              <input class="prompt" type="text" placeholder="Search Gene (e.g. MYC)">
+              <i class="search icon"></i>
+            </div>
+            <div class="results"></div>
+          </div>
+        </div>
+
         <div class="item">
           <div class="ui fluid icon input">
-            <input class="typeahead"
+            <input class="prompt typeahead"
               name="search" type="text"
-              placeholder="Search... (ex. MYC)"
+              placeholder="Search Gene (e.g. MYC)"
               autocomplete="on" spellcheck="off"
               data-highlight="true" data-limit=80
               data-source="search" data-selected="selected"

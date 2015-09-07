@@ -34,6 +34,10 @@ Meteor.methods({
       }
     };
   },
+  searchGeneSemantic: function(query) {
+    var regex = new RegExp(query);
+    return Aliases.find({ alias: {$regex: regex} }).fetch();
+  },
   searchGene: function(query, options) {
     options = options || {};
     // guard against client-side DOS: hard limit to 50

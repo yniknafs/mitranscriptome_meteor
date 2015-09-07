@@ -14,6 +14,41 @@ Meteor.startup(function(){
 
 Template.body.onRendered(function () {
   $('.menu .item').tab();
+
+  $('.ui.search')
+    .search({
+      type: 'standard',
+      minCharacters: 2,
+      fields: {
+        results: 'results',
+        title: 'gene_id',
+        description: 'alias'
+      },
+      onSelect: function(result, response) {
+        // console.log('onSelect result ' + JSON.stringify(result));
+        // console.log('onSelect response ' + JSON.stringify(response));
+        Session.set("selectedGeneId", result.gene_id);
+        return true;
+      },
+      apiSettings: {
+        // hack to use Meteor instead of semantic api
+        mockResponseAsync: function(settings, callback) {
+          var query = settings.urlData.query;
+          Meteor.call('searchGeneSemantic', query, function(err, res) {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            var response = { success: true, results: res };
+            callback(res);
+          });
+        },
+        onResponse: function(meteorResponse) {
+          // console.log('onResponse ' + JSON.stringify(meteorResponse));
+          return { results: _.values(meteorResponse) };
+        }
+      }
+    });
 });
 
 Template.body.helpers({
