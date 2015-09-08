@@ -1,7 +1,6 @@
 Meteor.startup(function(){
   // initializes typeahead instances
   Meteor.typeahead.inject();
-
   // initialize Session variables
   Meteor.call('getSamples', function(err, res) {
     Session.set('selectedSamples', res);
@@ -11,7 +10,9 @@ Meteor.startup(function(){
   Session.setDefault('expressionPlotScale', 'linear');
   Session.setDefault('expressionPlotType', 'box');
   Session.setDefault('selectedIsoform', 'gene');
+
 });
+
 
 Template.body.onRendered(function () {
   $('.menu .item').tab();

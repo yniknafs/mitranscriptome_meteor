@@ -26,6 +26,7 @@ SSEA_TRANSCRIPT_COLLECTION = 'SSEATranscript'
 SSEA_GENE_COLLECTION = 'SSEAGene'
 SSEA_GENE_COLLECTION = 'SSEAGene'
 ANALYSES_COLLECTION = 'Analyses'
+ANALYSIS_SSEA_KEY = 'analysis_id'
 
 def parse_column(filename, sep='\t', header=True, colnum=0):
     f = open(filename)
@@ -135,7 +136,47 @@ def convert_transcript_to_gene_expression(transcripts_file, expression_file, out
             fields.extend(map(str, v))
             print >>f, sep.join(fields)
 
-def convert_transcript_to_gene_ssea(ssea_file, sep='\t'):
+def parse_analyses(analysis_file, join_key='analysis_id', sep='\t'):
+    #read analysis file and make a dict based off key field
+    analysis_dict = {}
+    f = open(analysis_file)
+    header_fields = f.next().strip().split(sep)
+    key_idx = header_fields.index(join_key)
+    for line in f:
+        fields = line.strip().split(sep)
+        key = fields[key_idx]
+        analysis_dict[key] = dict(zip(header_fields,fields))
+    return analysis_dict
+
+def denormalize_ssea(analysis_dict, obj_literal, join_key='analysis_id', sep='\t'):
+    #add the analysis fields to the json object literal
+    key = obj_literal[join_key]
+    analysis_fields = analysis_dict[key]
+    for k,v in analysis_fields.items():
+        if k == key: continue
+        obj_literal[k] = v
+    return obj_literal
+
+def denormalize_gene_ssea(ssea_file, analysis_file, join_key='analysis_id', sep='\t'):
+    # parse analysis file
+    analysis_dict = parse_analyses(analysis_file, join_key)
+
+    f = open(ssea_file)
+    header_fields = f.next().strip().split(sep)
+    i = 0
+    for line in f:
+        fields = line.strip().split(sep)
+        d = {'_id': i}
+        for k,v in zip(header_fields, fields):
+            d[k] = v
+        d = denormalize_ssea(analysis_dict, d, join_key)
+        yield json.dumps(d)
+        i += 1
+
+def convert_transcript_to_gene_ssea(ssea_file, analysis_file, key='analysis_id', sep='\t'):
+    # parse analysis file
+    analysis_dict = parse_analyses(analysis_file)
+
     # build mapping of transcript_id to gene_id
     f = open(ssea_file)
     header_fields = f.next().strip().split(sep)
@@ -168,6 +209,7 @@ def convert_transcript_to_gene_ssea(ssea_file, sep='\t'):
                   'best_up': { 'transcript_id': results[-1][0],
                                'frac': results[-1][1],
                                'fdr': results[-1][2] } }
+            d = denormalize_ssea(analysis_dict, d)
             yield json.dumps(d)
 
 def run_mongoimport(args, json_iter, coll, tmp_json='tmp.json'):
@@ -235,12 +277,14 @@ if __name__ == '__main__':
             os.remove('expr.gene.tmp.txt')
 
     # import ssea trasncript results
-    if args.ssea_file:
-        run_mongoimport(args, parse_tabular(args.ssea_file, args.sep),
+    if args.ssea_file and args.analyses_file:
+        run_mongoimport(args, denormalize_gene_ssea(args.ssea_file, args.analyses_file,
+                        ANALYSIS_SSEA_KEY, args.sep),
                         SSEA_TRANSCRIPT_COLLECTION, 'ssea.transcript.tmp.json')
 
         # import ssea gene results
-        run_mongoimport(args, convert_transcript_to_gene_ssea(args.ssea_file),
+        run_mongoimport(args, convert_transcript_to_gene_ssea(args.ssea_file, args.analyses_file,
+                        ANALYSIS_SSEA_KEY, args.sep),
                         SSEA_GENE_COLLECTION, 'ssea.gene.tmp.json')
 
 
