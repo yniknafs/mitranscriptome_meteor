@@ -39,31 +39,35 @@
 
   <div class="ui menu">
 
-    <div id="dropdown-isoform" class="ui selection {{#unless active}}disabled{{/unless}} dropdown item">
-      <span class="text">Choose Isoform</span>
-      <input type="hidden" name="isoform">
-      <i class="dropdown icon"></i>
-      <div class="menu">
-        <div class="header">Gene</div>
-        {{#if active}}
-          <div class="item" data-value="gene">{{ gene.gene_id }}</div>
-        {{/if}}
-        <div class="divider"></div>
-        <div class="header">Isoforms</div>
-        {{#each isoforms}}
-          <div class="item" data-value="{{transcript_id}}">{{ transcript_id }}</div>
-        {{/each}}
+    <div class="item">
+      <div id="dropdown-isoform" class="ui selection {{#unless active}}disabled{{/unless}} dropdown">
+        <input type="hidden" name="isoform">
+        <i class="dropdown icon"></i>
+        <div class="default text">Choose Isoform</div>
+        <div class="menu">
+          <div class="header">Gene</div>
+          {{#if active}}
+            <div class="item" data-value="gene">{{ gene.gene_id }}</div>
+          {{/if}}
+          <div class="divider"></div>
+          <div class="header">Isoforms</div>
+          {{#each isoforms}}
+            <div class="item" data-value="{{transcript_id}}">{{ transcript_id }}</div>
+          {{/each}}
+        </div>
       </div>
     </div>
 
-    <div id="dropdown-groupby" class="ui multiple selection {{#unless active}}disabled{{/unless}} dropdown item">
-      <input type="hidden" name="groupby">
-      <i class="dropdown icon"></i>
-      <div class="default text">Grouping Order</div>
-      <div class="menu">
-        {{#each properties}}
-          <div class="item" data-value="{{prop_id}}">{{name}}</div>
-        {{/each}}
+    <div class="item">
+      <div id="dropdown-groupby" class="ui multiple selection {{#unless active}}disabled{{/unless}} dropdown item">
+        <input type="hidden" name="groupby">
+        <i class="dropdown icon"></i>
+        <div class="default text">Grouping Order</div>
+        <div class="menu">
+          {{#each properties}}
+            <div class="item" data-value="{{prop_id}}">{{name}}</div>
+          {{/each}}
+        </div>
       </div>
     </div>
 
