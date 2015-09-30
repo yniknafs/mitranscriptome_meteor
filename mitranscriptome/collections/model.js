@@ -42,7 +42,7 @@ TabularTables.Analysis = new Tabular.Table({
   name: "AnalysisList",
   collection: SSEAGene,
   columns: [
-    { data: "analysis_id", title: "Analysis Id" },
+    { data: "analysis_type", title: "Analysis Type" },
     { data: "analysis_tissue", title: "Tissue" },
     { data: "gene_id", title: "Gene ID" },
     { data: "best_dn.transcript_id", title: "Best Dn Isoform" },

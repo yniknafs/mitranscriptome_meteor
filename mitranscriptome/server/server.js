@@ -62,8 +62,7 @@ Meteor.methods({
     // console.log(options);
     // TODO fix regexp to support multiple tokens
     var regex = new RegExp(query);
-    var query = Analyses.find({name: {$regex:  regex}}, options).fetch();
-    // console.log(query);
+    var query = Analyses.find({analysis_name: {$regex:  regex}}, options).fetch();
     return query;
   }
 });
